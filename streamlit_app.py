@@ -283,7 +283,7 @@ def convert_df_to_csv(df):
 if (nav_option == 'Stats Dashboard'):
     with st.sidebar:
         st.markdown("""---""")
-        st.write('Filters')
+        st.write('__Filters__')
 
         leagues_list = list(merged_df['League'].drop_duplicates())
         leagues_list.sort()
