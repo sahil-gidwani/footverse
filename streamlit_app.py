@@ -509,8 +509,10 @@ if (nav_option == 'Player Comparison'):
             positions_filter_list)]
 
         players2 = list(positions_df2['Player'])
+        if(player_choice1 in players2):
+            players2.remove(player_choice1)
         players2.sort()
-        player_choice2 = st.selectbox('Select Player:', players2, index=1)
+        player_choice2 = st.selectbox('Select Player:', players2)
         player2_df = positions_df2[positions_df2['Player']
                                == player_choice2].reset_index()
 
