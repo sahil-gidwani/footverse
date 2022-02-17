@@ -476,14 +476,6 @@ if (nav_option == 'Player Comparison'):
         player1_df = positions_df1[positions_df1['Player']
                                == player_choice1].reset_index()
 
-        st.markdown("""---""")
-        agree = st.checkbox(
-            'Alternatively, select this to input player name manually')
-        if agree:
-            player_choice1 = st.text_input('')
-            player1_df = merged_df[merged_df['Player']
-                                   == player_choice1].reset_index()
-
     with rc:
         leagues2 = list(merged_df['League'].drop_duplicates())
         leagues2.sort()
@@ -521,14 +513,6 @@ if (nav_option == 'Player Comparison'):
         player_choice2 = st.selectbox('Select Player:', players2, index=1)
         player2_df = positions_df2[positions_df2['Player']
                                == player_choice2].reset_index()
-
-        st.markdown("""---""")
-        agree = st.checkbox(
-            'Alternatively, select this to input player name manually ')
-        if agree:
-            player_choice2 = st.text_input(' ')
-            player2_df = merged_df[merged_df['Player']
-                                   == player_choice2].reset_index()
 
     st.markdown("""---""")
 
