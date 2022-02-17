@@ -473,7 +473,7 @@ if (nav_option == 'Player Comparison'):
         players1 = list(positions_df1['Player'])
         players1.sort()
         player_choice1 = st.selectbox('Select Player:', players1, key=1111)
-        player1_df = merged_df[merged_df['Player']
+        player1_df = positions_df1[positions_df1['Player']
                                == player_choice1].reset_index()
 
         st.markdown("""---""")
@@ -519,7 +519,7 @@ if (nav_option == 'Player Comparison'):
         players2 = list(positions_df2['Player'])
         players2.sort()
         player_choice2 = st.selectbox('Select Player:', players2, index=1)
-        player2_df = merged_df[merged_df['Player']
+        player2_df = positions_df2[positions_df2['Player']
                                == player_choice2].reset_index()
 
         st.markdown("""---""")
