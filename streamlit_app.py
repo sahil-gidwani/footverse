@@ -324,6 +324,7 @@ if (nav_option == 'Stats Dashboard'):
             positions_filter_list)]
 
         nations_list = list(filtered_df['Nation'].drop_duplicates())
+        nations_list = [str(i) for i in nations_list]
         nations_list.sort()
         nations_filter = nations_list
         if st.checkbox('Choose Nations:'):
