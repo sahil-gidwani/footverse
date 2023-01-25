@@ -16,7 +16,7 @@ def load_standard_data():
         'https://fbref.com/en/comps/Big5/stats/players/Big-5-European-Leagues-Stats')[0]
 
     col_headers = ['0', 'Player', 'Nation', 'Position', 'Team', 'League', 'Age', 'Birth Year', 'Matches Played', 'Starts', 'Minutes', '90s', 'Goals', 'Assists', 'Non-Penalty Goals', 'Penalties Scored',
-                   'Penalties Attempted', 'Yellow Cards', 'Red Cards', 'Goals p90', 'Assists p90', 'G+A p90', 'npG p90', 'npG+A p90', 'xG', 'npxG', 'xA', 'npxG+xA', 'xG p90', 'xA p90', 'xG+xA p90', 'npxG p90', 'npxG+xA p90', '1']
+                   'Penalties Attempted', 'Yellow Cards', 'Red Cards', 'Goals p90', 'Assists p90', 'G+A p90', 'npG p90', 'npG+A p90', 'xG', 'npxG', 'xAG', 'npxG+xAG', 'xG p90', 'xAG p90', 'xG+xAG p90', 'npxG p90', 'npxG+xAG p90', '1']
     standard_df.columns = col_headers
     standard_df = standard_df[standard_df['Player'] != 'Player']
     standard_df = standard_df.drop(['0', '1'], axis=1)
@@ -63,7 +63,7 @@ def load_possession_data():
         'https://fbref.com/en/comps/Big5/possession/players/Big-5-European-Leagues-Stats')[0]
 
     col_headers = ['0', 'Player', 'Nation', 'Position', 'Team', 'League', 'Age', 'Birth Year', '90s', 'Touches', 'Touches Defensive Penalty', 'Touches Defensive 3rd', 'Touches Middle 3rd',
-                   'Touches Attacking 3rd', 'Touches Attacking Penalty', 'Touches Live', 'Dribbles Successful', 'Dribbles Attempted', 'Dribbles Success Rate', 'No. of Players Dribbled Past', 'Nutmegs', 'Carries', 'Carries Total Distance', 'Carries Progressive Distance', 'Progressive Carries', 'Carries Final 3rd', 'Carries 18 Yard Box', 'Unsuccessful Controls', 'Controls Lost', 'Receiving Target', 'Passes Received', 'Passes Received %', 'Progressive Passes Received', '1']
+                   'Touches Attacking 3rd', 'Touches Attacking Penalty', 'Touches Live', 'Dribbles Successful', 'Dribbles Attempted', 'Dribbles Success Rate', 'Misplaced', 'Displaced', 'Passes Received', 'Progressive Passes Received', '1']
     possession_df.columns = col_headers
     possession_df = possession_df[possession_df['Player'] != 'Player']
     possession_df = possession_df.drop(['0', '1', 'Player', 'Nation', 'Position', 'Team',
@@ -79,11 +79,11 @@ def load_passing_data():
         'https://fbref.com/en/comps/Big5/passing/players/Big-5-European-Leagues-Stats')[0]
 
     col_headers = ['0', 'Player', 'Nation', 'Position', 'Team', 'League', 'Age', 'Birth Year', '90s', 'Total Passes Completed', 'Total Passes Attempted', 'Total Passes Completion Rate', 'Total Passes Distance', 'Total Passes Progressive Distance', 'Short Passes Completed', 'Short Passes Attempted', 'Short Passes Completion Rate',
-                   'Medium Passes Completed', 'Medium Passes Attempted', 'Medium Passes Completion Rate', 'Long Passes Completed', 'Long Passes Attempted', 'Long Passes Completion Rate', 'Assists', 'xA', 'A-xA', 'Keypasses', 'Passes Into the Final 3rd', 'Passes Into the 18 Yard Box', 'Crosses Into the 18 Yard Box', 'Progressive Passes', '1']
+                   'Medium Passes Completed', 'Medium Passes Attempted', 'Medium Passes Completion Rate', 'Long Passes Completed', 'Long Passes Attempted', 'Long Passes Completion Rate', 'Assists', 'xAG', 'xA', 'A-xAG', 'Keypasses', 'Passes Into the Final 3rd', 'Passes Into the 18 Yard Box', 'Crosses Into the 18 Yard Box', 'Progressive Passes', '1']
     passing_df.columns = col_headers
     passing_df = passing_df[passing_df['Player'] != 'Player']
     passing_df = passing_df.drop(['0', '1', 'Player', 'Nation', 'Position', 'Team',
-                                  'League', 'Age', 'Birth Year', '90s', 'Assists', 'xA'], axis=1)
+                                  'League', 'Age', 'Birth Year', '90s', 'Assists', 'xAG'], axis=1)
     passing_df.reset_index()
 
     return passing_df
@@ -94,12 +94,12 @@ def load_passing_types_data():
     passing_types_df = pd.read_html(
         'https://fbref.com/en/comps/Big5/passing_types/players/Big-5-European-Leagues-Stats')[0]
 
-    col_headers = ['0', 'Player', 'Nation', 'Position', 'Team', 'League', 'Age', 'Birth Year', '90s', 'Passes Attempted', 'Live Ball Passes', 'Dead Ball Passes', 'Free Kick Passes', 'Passes Back to Defenders', 'Passes under Pressure', 'Passes Distance>40', 'Crosses', 'Corner Kicks', 'Inswinging Corner Kicks', 'Outswinging Corner Kicks',
-                   'Straight Corner Kicks', 'Ground Passes', 'Low Passes', 'High Passes', 'Passes Left Foot', 'Passes Right Foot', 'Passes Head', 'Throw Ins', 'Other Passes', 'Completed Passes', 'Passes Offsides', 'Passes Out of Bounds', 'Passes Intercepted', 'Passes Blocked', '1']
+    col_headers = ['0', 'Player', 'Nation', 'Position', 'Team', 'League', 'Age', 'Birth Year', '90s', 'Total Passes Attempted', 'Live Ball Passes', 'Dead Ball Passes', 'Free Kick Passes', 'Passes Back to Defenders', 'Passes Distance>40', 'Crosses', 'Throw Ins', 'Corner Kicks', 'Inswinging Corner Kicks', 'Outswinging Corner Kicks',
+                   'Straight Corner Kicks', 'Total Completed Passes', 'Passes Offside', 'Passes Blocked', '1']
     passing_types_df.columns = col_headers
     passing_types_df = passing_types_df[passing_types_df['Player'] != 'Player']
     passing_types_df = passing_types_df.drop(['0', '1', 'Player', 'Nation', 'Position', 'Team',
-                                              'League', 'Age', 'Birth Year', '90s', 'Completed Passes'], axis=1)
+                                              'League', 'Age', 'Birth Year', '90s', 'Total Passes Attempted', 'Total Completed Passes'], axis=1)
     passing_types_df.reset_index()
 
     return passing_types_df
@@ -110,8 +110,8 @@ def load_defensive_actions_data():
     defensive_actions_df = pd.read_html(
         'https://fbref.com/en/comps/Big5/defense/players/Big-5-European-Leagues-Stats')[0]
 
-    col_headers = ['0', 'Player', 'Nation', 'Position', 'Team', 'League', 'Age', 'Birth Year', '90s', 'Tackles', 'Tackles Won', 'Tackles Defensive 3rd', 'Tackles Middle 3rd', 'Tackles Attacking 3rd', 'Dribblers Tackled', 'Dribbled Past + Tackles', '% Dribblers Tackled', 'Dribbled Past', 'Pressures', 'Successful Pressures',
-                   'Pressures %', 'Pressures Defensive 3rd', 'Pressures Middle 3rd', 'Pressures Attacking 3rd', 'Blocks', 'Shots Blocked', 'Shots on Target Blocked', 'Passes Blocked', 'Interceptions', 'Tackles+Interceptions', 'Clearances', 'Errors Leading to Opponents Shots', '1']
+    col_headers = ['0', 'Player', 'Nation', 'Position', 'Team', 'League', 'Age', 'Birth Year', '90s', 'Tackles', 'Tackles Won', 'Tackles Defensive 3rd', 'Tackles Middle 3rd', 'Tackles Attacking 3rd', 'Dribblers Tackled',
+                   'Dribbled Past + Tackles', 'Tackle %', 'Dribbled Past', 'Blocks', 'Shots Blocked', 'Passes Blocked', 'Interceptions', 'Tackles+Interceptions', 'Clearances', 'Errors Leading to Opponents Shots', '1']
     defensive_actions_df.columns = col_headers
     defensive_actions_df = defensive_actions_df[defensive_actions_df['Player'] != 'Player']
     defensive_actions_df = defensive_actions_df.drop(['0', '1', 'Player', 'Nation', 'Position', 'Team',
@@ -127,7 +127,7 @@ def load_playing_time_data():
         'https://fbref.com/en/comps/Big5/playingtime/players/Big-5-European-Leagues-Stats')[0]
 
     col_headers = ['0', 'Player', 'Nation', 'Position', 'Team', 'League', 'Age', 'Birth Year', 'Matches Played', 'Minutes', 'Minutes per Matches', '% Minutes played', '90s', 'Starts', 'Minutes per Start', 'Completed Matches', 'Subs', 'Minutes per Sub', 'Unused Sub', 'Points per Match',
-                   'onG', 'onGA', '+/-', '+/-90', 'On-Off', 'onxG', 'onxGA', 'xG+/-', 'xG+/-90', 'xOn-Off', '1']
+                   'onG', 'onGA', 'G+/-', 'G+/-90', 'On-Off', 'onxG', 'onxGA', 'xG+/-', 'xG+/-90', 'xOn-Off', '1']
     playing_time_df.columns = col_headers
     playing_time_df = playing_time_df[playing_time_df['Player'] != 'Player']
     playing_time_df = playing_time_df.drop(['0', '1', 'Player', 'Nation', 'Position', 'Team',
@@ -143,7 +143,7 @@ def load_miscellaneous_data():
         'https://fbref.com/en/comps/Big5/misc/players/Big-5-European-Leagues-Stats')[0]
 
     col_headers = ['0', 'Player', 'Nation', 'Position', 'Team', 'League', 'Age', 'Birth Year', '90s', 'Yellow Cards', 'Red Cards', 'Second Yellow Cards', 'Fouls Committed', 'Fouls Drawn', 'Offsides', 'Crosses', 'Interceptions', 'Tackles Won', 'Penalties Won', 'Penalties Conceded',
-                   'Own Goals', 'Ball Recoveries', 'Aerial Duels Won', 'Aerial Duels Lost', 'Aerial Duels Won %', '1']
+                   'Own Goals', 'Loose Ball Recoveries', 'Aerial Duels Won', 'Aerial Duels Lost', 'Aerial Duels Won %', '1']
     miscellaneous_df.columns = col_headers
     miscellaneous_df = miscellaneous_df[miscellaneous_df['Player'] != 'Player']
     miscellaneous_df = miscellaneous_df.drop(['0', '1', 'Player', 'Nation', 'Position', 'Team',
@@ -187,8 +187,6 @@ def merge_data(standard_df, shooting_df, gsca_df, possession_df, passing_df, pas
 
 # add specific charts for stats dashboard!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # set precision parameter!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! .style.format(precision=2)
-# st.expander for show data
-# add icon to the top or to the right of the title
 # add a lot of icons
 
 standard_df = load_standard_data()
@@ -207,59 +205,6 @@ merged_df = merge_data(standard_df, shooting_df, gsca_df, possession_df, passing
 
 def footer():
     st.markdown("""---""")
-
-    # st.sidebar.markdown("""---""")
-    # st.sidebar.markdown('**Author:**')
-    # st.sidebar.markdown('_Sahil Gidwani_')
-
-    # social media buttons
-    social_media_buttons = """<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-    <style>
-    .social-menu {
-        display: flex;
-        list-style-type: none;
-    }
-    .social-menu i {
-        color: #fff;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        font-size: 25px;
-        margin-right: 10px;
-        transition: all 0.2s ease-in-out;
-        display: flex;
-        justify-content: center;
-    }
-    .social-menu i:before {
-        display: flex;
-        flex-flow: row nowrap;
-        align-items: center;
-    }
-    .social-menu a {
-        text-decoration: none;
-    }
-    .fa-linkedin {
-        background:#007bb6
-    }
-    .fa-instagram {
-        background:#8a3ab9
-    }
-    .fa-github {
-        background:#000000
-    }
-    .social-menu i:hover {
-        opacity: .7;
-        border-radius: 0;
-    }
-    </style>
-    <ul class="social-menu">
-        <li><a href="https://www.linkedin.com/in/sahil-gidwani-70b770209/"><i class="fab fa-linkedin"></i></a></li>
-        <li><a href="https://www.instagram.com/sahil_gidwani_/"><i class="fab fa-instagram"></i> </a></li>
-        <li><a href="https://github.com/sahil-gidwani"><i class="fab fa-github"></i> </a></li>
-    </ul>"""
-
-    l, m, r = st.columns(3)
-    m.markdown(social_media_buttons, unsafe_allow_html=True)
 
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     # st.write(merged_df)
@@ -289,7 +234,7 @@ if (nav_option == 'Stats Dashboard'):
         leagues_list.sort()
         leagues_filter = leagues_list
         if st.checkbox('Choose Leagues:'):
-            leagues_filter = st.sidebar.multiselect(
+            leagues_filter = st.multiselect(
                 '', leagues_list, default=leagues_list)
 
         filtered_df = merged_df[merged_df['League'].isin(leagues_filter)]
@@ -301,7 +246,6 @@ if (nav_option == 'Stats Dashboard'):
                 '', teams_list, default=teams_list)
         filtered_df = filtered_df[filtered_df['Team'].isin(teams_filter)]
 
-        # !!!!!!!!!!!!!!!!!! 'GK,MF' removed for future versions!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         gk_list = ['GK']
         df_list = ['DF,FW', 'DF,MF', 'DF']
         mf_list = ['MF,FW', 'MF,DF', 'MF']
@@ -338,7 +282,7 @@ if (nav_option == 'Stats Dashboard'):
         filtered_df = filtered_df[filtered_df['Age'] <= age_filter[1]]
 
     stats_columns = list(merged_df.columns)
-    del stats_columns[0:11]
+    del stats_columns[0:11]  # remove general non-statistical info
 
     statbox_option = st.selectbox('Choose the Stat:', (stats_columns))
 
@@ -394,8 +338,6 @@ def plot_radar_chart(i1, i2):
     stats_categories = list(stats_player1.columns)
 
     def conditional_formatting_rows(row):
-        # highlight_green = 'background-color: darkgreen;'
-        # highlight_red = 'background-color: darkred;'
         highlight_green = 'color: lawngreen;'
         highlight_red = 'color:red'
         default = ''
@@ -437,6 +379,7 @@ def plot_radar_chart(i1, i2):
 
 
 if (nav_option == 'Player Comparison'):
+    # normalize data !!!!!!!!!!!!!!!!!!!!!!!!!
     lc, rc = st.columns(2)
 
     with lc:
@@ -475,7 +418,7 @@ if (nav_option == 'Player Comparison'):
         players1.sort()
         player_choice1 = st.selectbox('Select Player:', players1, key=1111)
         player1_df = positions_df1[positions_df1['Player']
-                               == player_choice1].reset_index()
+                                   == player_choice1].reset_index()
 
     with rc:
         leagues2 = list(merged_df['League'].drop_duplicates())
@@ -515,7 +458,7 @@ if (nav_option == 'Player Comparison'):
         players2.sort()
         player_choice2 = st.selectbox('Select Player:', players2)
         player2_df = positions_df2[positions_df2['Player']
-                               == player_choice2].reset_index()
+                                   == player_choice2].reset_index()
 
     st.markdown("""---""")
 
@@ -535,22 +478,22 @@ if (nav_option == 'Player Comparison'):
         plot_radar_chart(46, 62)
 
     if(category_choice == 'Possession'):
-        plot_radar_chart(62, 86)
+        plot_radar_chart(62, 76)
 
     if(category_choice == 'Passing'):
-        plot_radar_chart(86, 106)
+        plot_radar_chart(76, 97)
 
     if(category_choice == 'Pass Types'):
-        plot_radar_chart(106, 130)
+        plot_radar_chart(97, 110)
 
     if(category_choice == 'Defensive Actions'):
-        plot_radar_chart(130, 152)
+        plot_radar_chart(110, 125)
 
     if(category_choice == 'Playing Time'):
-        plot_radar_chart(152, 170)
+        plot_radar_chart(125, 143)
 
     if(category_choice == 'Miscellaneous'):
-        plot_radar_chart(170, 181)
+        plot_radar_chart(143, 154)
 
 if(nav_option == 'Individual Player Scout Report'):
     gk_list = ['GK']
@@ -639,41 +582,15 @@ if(nav_option == 'Individual Player Scout Report'):
                           == player_choice].reset_index()
 
     stats = list(player_df.columns)
-    percentile_rank = stats[188:361]
-    stats = stats[8:181]
-    stats_value = player_df.iloc[:, 8:181].values.flatten().tolist()
+    percentile_rank = stats[161:307]
+    stats = stats[8:154]
+    stats_value = player_df.iloc[:, 8:154].values.flatten().tolist()
     percentile_rank_values = player_df.iloc[:,
-                                            188:361].values.flatten().tolist()
+                                            161:307].values.flatten().tolist()
 
     scout_report_df = pd.DataFrame(
         {'Statistics': stats, 'Value': stats_value, 'Percentile': percentile_rank_values})
     scout_report_df = scout_report_df.set_index('Statistics')
-
-    # def conditional_formatting(cell_value):
-    #     highlight_lawn_green = 'color: lawngreen;'
-    #     highlight_orange = 'color: orange;'
-    #     highlight_yellow = 'color: yellow;'
-    #     highlight_red = 'color: red;'
-    #     default = ''
-    #     if type(cell_value) in [float, int]:
-    #         if (cell_value >= 0.9):
-    #             return highlight_lawn_green
-    #         if (cell_value >= 0.7 and cell_value < 0.9):
-    #             return highlight_orange
-    #         if (cell_value >= 0.5 and cell_value < 0.7):
-    #             return highlight_yellow
-    #         if (cell_value >= 0 and cell_value < 0.5):
-    #             return highlight_red
-    #     return default
-
-    # st.dataframe(scout_report_df.style.applymap(
-    #     conditional_formatting, subset=['Percentile']).format({'Percentile': "{:.2%}"}).format(precision=2, subset=['Value']))
-
-    # st.write(scout_report_df.style.bar(
-    #     subset=['Percentile'], color='darkgreen').format({'Percentile': "{:.2%}"}).format(precision=2, subset=['Value']))
-
-    # st.dataframe(scout_report_df.style.format({'Percentile': "{:.2%}"}).background_gradient(
-    #     cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
 
     with st.expander('Standard', expanded=True):
         st.dataframe(scout_report_df.iloc[0:26, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
@@ -688,54 +605,30 @@ if(nav_option == 'Individual Player Scout Report'):
             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
 
     with st.expander('Possession'):
-        st.dataframe(scout_report_df.iloc[54:78, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
+        st.dataframe(scout_report_df.iloc[54:68, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
 
     with st.expander('Passing'):
-        st.dataframe(scout_report_df.iloc[78:98, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
+        st.dataframe(scout_report_df.iloc[68:89, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
 
     with st.expander('Pass Types'):
-        st.dataframe(scout_report_df.iloc[98:122, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
+        st.dataframe(scout_report_df.iloc[89:102, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
 
     with st.expander('Defensive Actions'):
-        st.dataframe(scout_report_df.iloc[122:144, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
+        st.dataframe(scout_report_df.iloc[102:117, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
 
     with st.expander('Playing Time'):
-        st.dataframe(scout_report_df.iloc[144:162, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
+        st.dataframe(scout_report_df.iloc[117:135, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
 
     with st.expander('Miscellaneous'):
-        st.dataframe(scout_report_df.iloc[162:173, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
+        st.dataframe(scout_report_df.iloc[135:146, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
 
     st.download_button(label="Download data as CSV",
                        data=scout_report_df.to_csv().encode('utf-8'), mime='text/csv')
-
-    # lc, rc = st.columns(2)
-
-    # with lc:
-    #     with st.expander('Standard', expanded=True):
-    #         st.dataframe(scout_report_df.style.format({'Percentile': "{:.2%}"}).background_gradient(
-    #             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
-    #     with st.expander('Standard', expanded=True):
-    #         st.dataframe(scout_report_df.style.format({'Percentile': "{:.2%}"}).background_gradient(
-    #             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
-    #     with st.expander('Standard', expanded=True):
-    #         st.dataframe(scout_report_df.style.format({'Percentile': "{:.2%}"}).background_gradient(
-    #             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
-
-    # with rc:
-    #     with st.expander('Standard', expanded=True):
-    #         st.dataframe(scout_report_df.style.format({'Percentile': "{:.2%}"}).background_gradient(
-    #             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
-    #     with st.expander('Standard', expanded=True):
-    #         st.dataframe(scout_report_df.style.format({'Percentile': "{:.2%}"}).background_gradient(
-    #             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
-    #     with st.expander('Standard', expanded=True):
-    #         st.dataframe(scout_report_df.style.format({'Percentile': "{:.2%}"}).background_gradient(
-    #             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
 
     footer()
