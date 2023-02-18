@@ -15,8 +15,8 @@ def load_standard_data():
     standard_df = pd.read_html(
         'https://fbref.com/en/comps/Big5/stats/players/Big-5-European-Leagues-Stats')[0]
 
-    col_headers = ['0', 'Player', 'Nation', 'Position', 'Team', 'League', 'Age', 'Birth Year', 'Matches Played', 'Starts', 'Minutes', '90s', 'Goals', 'Assists', 'Non-Penalty Goals', 'Penalties Scored',
-                   'Penalties Attempted', 'Yellow Cards', 'Red Cards', 'Goals p90', 'Assists p90', 'G+A p90', 'npG p90', 'npG+A p90', 'xG', 'npxG', 'xAG', 'npxG+xAG', 'xG p90', 'xAG p90', 'xG+xAG p90', 'npxG p90', 'npxG+xAG p90', '1']
+    col_headers = ['0', 'Player', 'Nation', 'Position', 'Team', 'League', 'Age', 'Birth Year', 'Matches Played', 'Starts', 'Minutes', '90s', 'Goals', 'Assists', 'Goals + Assists', 'Non-Penalty Goals', 'Penalties Scored',
+                   'Penalties Attempted', 'Yellow Cards', 'Red Cards', 'xG', 'npxG', 'xAG', 'npxG+xAG', 'Progressive Carries', 'Progressive Passes', 'Progressive Passes Received', 'Goals p90', 'Assists p90', 'G+A p90', 'npG p90', 'npG+A p90', 'xG p90', 'xAG p90', 'xG+xAG p90', 'npxG p90', 'npxG+xAG p90', '1']
     standard_df.columns = col_headers
     standard_df = standard_df[standard_df['Player'] != 'Player']
     standard_df = standard_df.drop(['0', '1'], axis=1)
@@ -63,11 +63,11 @@ def load_possession_data():
         'https://fbref.com/en/comps/Big5/possession/players/Big-5-European-Leagues-Stats')[0]
 
     col_headers = ['0', 'Player', 'Nation', 'Position', 'Team', 'League', 'Age', 'Birth Year', '90s', 'Touches', 'Touches Defensive Penalty', 'Touches Defensive 3rd', 'Touches Middle 3rd',
-                   'Touches Attacking 3rd', 'Touches Attacking Penalty', 'Touches Live', 'Dribbles Successful', 'Dribbles Attempted', 'Dribbles Success Rate', 'Misplaced', 'Displaced', 'Passes Received', 'Progressive Passes Received', '1']
+                   'Touches Attacking 3rd', 'Touches Attacking Penalty', 'Touches Live', 'Dribbles Attempted', 'Dribbles Successful', 'Dribbles Success Rate', 'Dribbles Tackled', 'Dribbles Tackled Rate', 'Carries', 'Carries Total Distance', 'Progressive Carries Distance', 'Progressive Carries', 'Carries Final 3rd', 'Carries Penalty Area', 'Miscontrols', 'Dispossessed', 'Passes Received', 'Progressive Passes Received', '1']
     possession_df.columns = col_headers
     possession_df = possession_df[possession_df['Player'] != 'Player']
     possession_df = possession_df.drop(['0', '1', 'Player', 'Nation', 'Position', 'Team',
-                                        'League', 'Age', 'Birth Year', '90s'], axis=1)
+                                        'League', 'Age', 'Birth Year', '90s', 'Progressive Carries', 'Progressive Passes Received'], axis=1)
     possession_df.reset_index()
 
     return possession_df
@@ -78,12 +78,12 @@ def load_passing_data():
     passing_df = pd.read_html(
         'https://fbref.com/en/comps/Big5/passing/players/Big-5-European-Leagues-Stats')[0]
 
-    col_headers = ['0', 'Player', 'Nation', 'Position', 'Team', 'League', 'Age', 'Birth Year', '90s', 'Total Passes Completed', 'Total Passes Attempted', 'Total Passes Completion Rate', 'Total Passes Distance', 'Total Passes Progressive Distance', 'Short Passes Completed', 'Short Passes Attempted', 'Short Passes Completion Rate',
+    col_headers = ['0', 'Player', 'Nation', 'Position', 'Team', 'League', 'Age', 'Birth Year', '90s', 'Total Passes Completed', 'Total Passes Attempted', 'Total Passes Completion Rate', 'Total Passes Distance', 'Progressive Passes Distance', 'Short Passes Completed', 'Short Passes Attempted', 'Short Passes Completion Rate',
                    'Medium Passes Completed', 'Medium Passes Attempted', 'Medium Passes Completion Rate', 'Long Passes Completed', 'Long Passes Attempted', 'Long Passes Completion Rate', 'Assists', 'xAG', 'xA', 'A-xAG', 'Keypasses', 'Passes Into the Final 3rd', 'Passes Into the 18 Yard Box', 'Crosses Into the 18 Yard Box', 'Progressive Passes', '1']
     passing_df.columns = col_headers
     passing_df = passing_df[passing_df['Player'] != 'Player']
     passing_df = passing_df.drop(['0', '1', 'Player', 'Nation', 'Position', 'Team',
-                                  'League', 'Age', 'Birth Year', '90s', 'Assists', 'xAG'], axis=1)
+                                  'League', 'Age', 'Birth Year', '90s', 'Assists', 'xAG', 'Progressive Passes'], axis=1)
     passing_df.reset_index()
 
     return passing_df
@@ -176,9 +176,6 @@ def merge_data(standard_df, shooting_df, gsca_df, possession_df, passing_df, pas
 
     merged_df['League'] = merged_df['League'].replace(
         ['eng Premier League', 'fr Ligue 1', 'de Bundesliga', 'it Serie A', 'es La Liga'], ['Premier League', 'Ligue 1', 'Bundesliga', 'Serie A', 'La Liga'])
-
-    merged_df['Goals+Assists'] = merged_df['Goals']+merged_df['Assists']
-    merged_df.insert(13, 'Goals+Assists', merged_df.pop('Goals+Assists'))
 
     merged_df.reset_index()
 
@@ -295,7 +292,7 @@ if (nav_option == 'Stats Dashboard'):
             'Minimum minutes played', 0, int(filtered_df['Minutes'].max()), mean_minutes)
         filtered_df = filtered_df[filtered_df['Minutes'] >= minutes_range]
 
-    if(statbox_option == 'Goals+Assists'):
+    if(statbox_option == 'Goals + Assists'):
         goals_assists_chart = px.bar(filtered_df.sort_values(
             ['Goals+Assists'], ascending=False).head(number_of_players), x='Player', y=['Goals', 'Assists'],
             hover_data=['Position', 'Team', 'Age', 'Goals+Assists'], color='League', labels={'value': 'Goals + Assists'})
@@ -469,31 +466,31 @@ if (nav_option == 'Player Comparison'):
     st.markdown("""---""")
 
     if(category_choice == 'Standard'):
-        plot_radar_chart(8, 34)
+        plot_radar_chart(8, 37)
 
     if(category_choice == 'Shooting'):
-        plot_radar_chart(34, 46)
+        plot_radar_chart(37, 49)
 
     if(category_choice == 'Goal and Shot Creation'):
-        plot_radar_chart(46, 62)
+        plot_radar_chart(49, 65)
 
     if(category_choice == 'Possession'):
-        plot_radar_chart(62, 76)
+        plot_radar_chart(65, 85)
 
     if(category_choice == 'Passing'):
-        plot_radar_chart(76, 97)
+        plot_radar_chart(85, 105)
 
     if(category_choice == 'Pass Types'):
-        plot_radar_chart(97, 110)
+        plot_radar_chart(105, 118)
 
     if(category_choice == 'Defensive Actions'):
-        plot_radar_chart(110, 125)
+        plot_radar_chart(118, 133)
 
     if(category_choice == 'Playing Time'):
-        plot_radar_chart(125, 143)
+        plot_radar_chart(133, 151)
 
     if(category_choice == 'Miscellaneous'):
-        plot_radar_chart(143, 154)
+        plot_radar_chart(151, 162)
 
 if(nav_option == 'Individual Player Scout Report'):
     gk_list = ['GK']
