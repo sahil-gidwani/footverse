@@ -579,50 +579,51 @@ if(nav_option == 'Individual Player Scout Report'):
                           == player_choice].reset_index()
 
     stats = list(player_df.columns)
-    percentile_rank = stats[161:307]
-    stats = stats[8:154]
-    stats_value = player_df.iloc[:, 8:154].values.flatten().tolist()
+    percentile_rank = stats[169:323]
+    stats = stats[8:162]
+    stats_value = player_df.iloc[:, 8:162].values.flatten().tolist()
     percentile_rank_values = player_df.iloc[:,
-                                            161:307].values.flatten().tolist()
+                                            169:323].values.flatten().tolist()
 
     scout_report_df = pd.DataFrame(
         {'Statistics': stats, 'Value': stats_value, 'Percentile': percentile_rank_values})
     scout_report_df = scout_report_df.set_index('Statistics')
+    st.write(scout_report_df)
 
     with st.expander('Standard', expanded=True):
-        st.dataframe(scout_report_df.iloc[0:26, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
+        st.dataframe(scout_report_df.iloc[0:29, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
 
     with st.expander('Shooting'):
-        st.dataframe(scout_report_df.iloc[26:38, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
+        st.dataframe(scout_report_df.iloc[29:41, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
 
     with st.expander('Goal and Shot Creation'):
-        st.dataframe(scout_report_df.iloc[38:54, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
+        st.dataframe(scout_report_df.iloc[41:57, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
 
     with st.expander('Possession'):
-        st.dataframe(scout_report_df.iloc[54:68, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
+        st.dataframe(scout_report_df.iloc[57:77, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
 
     with st.expander('Passing'):
-        st.dataframe(scout_report_df.iloc[68:89, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
+        st.dataframe(scout_report_df.iloc[77:97, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
 
     with st.expander('Pass Types'):
-        st.dataframe(scout_report_df.iloc[89:102, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
+        st.dataframe(scout_report_df.iloc[97:110, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
 
     with st.expander('Defensive Actions'):
-        st.dataframe(scout_report_df.iloc[102:117, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
+        st.dataframe(scout_report_df.iloc[110:125, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
 
     with st.expander('Playing Time'):
-        st.dataframe(scout_report_df.iloc[117:135, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
+        st.dataframe(scout_report_df.iloc[125:143, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
 
     with st.expander('Miscellaneous'):
-        st.dataframe(scout_report_df.iloc[135:146, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
+        st.dataframe(scout_report_df.iloc[143:154, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
             cmap='RdYlGn', subset=['Percentile']).format(precision=2, subset=['Value']))
 
     st.download_button(label="Download data as CSV",
