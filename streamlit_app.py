@@ -588,7 +588,6 @@ if(nav_option == 'Individual Player Scout Report'):
     scout_report_df = pd.DataFrame(
         {'Statistics': stats, 'Value': stats_value, 'Percentile': percentile_rank_values})
     scout_report_df = scout_report_df.set_index('Statistics')
-    st.write(scout_report_df)
 
     with st.expander('Standard', expanded=True):
         st.dataframe(scout_report_df.iloc[0:29, :].style.format({'Percentile': "{:.2%}"}).background_gradient(
