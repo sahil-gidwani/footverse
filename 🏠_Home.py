@@ -121,12 +121,6 @@ datasets = {
     "Advanced Goalkeeping Data": ("https://fbref.com/en/comps/Big5/keepersadv/players/Big-5-European-Leagues-Stats", "columns/advanced_goalkeeping_data.json", False, True),
 }
 
-# https://medium.com/@ricardoandreom/how-to-scrape-and-personalize-data-from-fbref-with-python-a-guide-to-unlocking-football-insights-7e623607afca
-url_df = "https://fbref.com/en/comps/Big5/gca/players/Big-5-European-Leagues-Stats"
-df = fetch_with_retries(url_df)
-if df is not None:
-    st.write(df)
-
 for name, values in datasets.items():
     url, json_file, *flags = values
     standard = bool(flags[0]) if len(flags) > 0 else False
