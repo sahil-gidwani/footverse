@@ -1,0 +1,32 @@
+{
+  "col_headers": [
+    "Rk",
+    "Player",
+    "Nation",
+    "Position",
+    "Team",
+    "League",
+    "Age",
+    "Birth Year",
+    "Matches Played",
+    "Starts",
+    "Minutes",
+    "90s",
+    "GA",
+    "GA p90",
+    "SoTA",
+    "Saves",
+    "Save%",
+    "Wins",
+    "Draws",
+    "Losses",
+    "Clean Sheets",
+    "Clean Sheet %",
+    "Pens Att",
+    "Pens Allowed",
+    "Pens Saved",
+    "Pens Missed",
+    "Pens Save %",
+    "Matches"
+  ]
+}

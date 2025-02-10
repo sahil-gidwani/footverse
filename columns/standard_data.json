@@ -38,5 +38,10 @@
     "npxG p90",
     "npxG+xAG p90",
     "Matches"
+  ],
+  "col_remove": [
+    "Progressive Carries",
+    "Progressive Passes",
+    "Progressive Passes Received"
   ]
 }
