@@ -144,6 +144,25 @@ def merge_data(*dfs, how="outer"):
                 merged_df[original_col] = merged_df[original_col].combine_first(merged_df[col])
                 merged_df.drop(columns=[col], inplace=True)
     
+    # Ensure 'Age' is a string
+    merged_df['Age'] = merged_df['Age'].astype(str)
+    # Format 'Age' while preserving its structure
+    merged_df['Age'] = merged_df['Age'].str[:2] + '.' + merged_df['Age'].str[3:6]
+    
+    # * Convert all columns to numeric (except first 5 columns)
+    merged_df.iloc[:, 5:] = merged_df.iloc[:, 5:].apply(pd.to_numeric, errors='coerce')
+    merged_df = merged_df.convert_dtypes()
+    
+    # * Rename the 'League' column to standard names
+    league_mapping = {
+        'eng Premier League': 'Premier League',
+        'fr Ligue 1': 'Ligue 1',
+        'de Bundesliga': 'Bundesliga',
+        'it Serie A': 'Serie A',
+        'es La Liga': 'La Liga'
+    }
+    merged_df['League'] = merged_df['League'].replace(league_mapping)
+    
     return merged_df
 
 # ! The playing time data consists of both outfield and goalkeeping data, so it is not included in the list of datasets.
@@ -171,8 +190,8 @@ for name, values in datasets.items():
     
     df = load_data(url, json_file, standard=standard, goalkeeping=goalkeeping)
     if df is not None:
-        st.subheader(name)
-        st.write(df)
+        # st.subheader(name)
+        # st.write(df)
         if goalkeeping:
             goalkeeping_df.append(df)
         else:
