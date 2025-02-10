@@ -1,0 +1,30 @@
+{
+  "col_headers": [
+    "Rk",
+    "Player",
+    "Nation",
+    "Position",
+    "Team",
+    "League",
+    "Age",
+    "Birth Year",
+    "90s",
+    "SCA",
+    "SCA p90",
+    "SCA Pass Live",
+    "SCA Pass Dead",
+    "SCA Take-On",
+    "SCA Shot",
+    "SCA Foul Drawn",
+    "SCA Def Action",
+    "GCA",
+    "GCA p90",
+    "GCA Pass Live",
+    "GCA Pass Dead",
+    "GCA Take-On",
+    "GCA Shot",
+    "GCA Foul Drawn",
+    "GCA Def Action",
+    "Matches"
+  ]
+}
