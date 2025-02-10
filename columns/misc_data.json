@@ -26,5 +26,6 @@
     "Aerials Lost",
     "Aerial Win %",
     "Matches"
-  ]
+  ],
+  "col_remove": ["Crosses", "Interceptions", "Tackles Won"]
 }

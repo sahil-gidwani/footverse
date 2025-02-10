@@ -1,13 +1,13 @@
 {
   "col_headers": [
-    "Rk",
+    "Rank",
     "Player",
-    "Nation",
+    "Nationality",
     "Position",
     "Team",
     "League",
     "Age",
-    "Birth Year",
+    "Year of Birth",
     "Matches Played",
     "Starts",
     "Minutes",
@@ -40,6 +40,10 @@
     "Matches"
   ],
   "col_remove": [
+    "Yellow Cards",
+    "Red Cards",
+    "Penalties Scored",
+    "Penalties Attempted",
     "Progressive Carries",
     "Progressive Passes",
     "Progressive Passes Received"
