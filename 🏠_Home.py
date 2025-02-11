@@ -10,8 +10,5 @@ st.markdown("---")
 if 'outfield_data' not in st.session_state or 'goalkeeping_data' not in st.session_state:
     store_session_data()
 
-st.subheader("Outfield Data")
-st.write(st.session_state.outfield_data)
-
-st.subheader("Goalkeeping Data")
-st.write(st.session_state.goalkeeping_data)
+st.subheader("Data")
+st.write(st.session_state.merged_data)
