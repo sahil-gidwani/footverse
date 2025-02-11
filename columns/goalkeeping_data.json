@@ -1,0 +1,32 @@
+{
+  "col_headers": [
+    "Rank",
+    "Player",
+    "Nationality",
+    "Position",
+    "Team",
+    "League",
+    "Age",
+    "Year of Birth",
+    "Matches Played",
+    "Starts",
+    "Minutes",
+    "90s",
+    "Goals Against",
+    "Goals Against p90",
+    "Shots on Target Against",
+    "Saves",
+    "Save%",
+    "Wins",
+    "Draws",
+    "Losses",
+    "Clean Sheets",
+    "Clean Sheet %",
+    "Penalties Faced",
+    "Penalties Allowed",
+    "Penalties Saved",
+    "Penalties Missed",
+    "Penalty Save %",
+    "Matches"
+  ]
+}

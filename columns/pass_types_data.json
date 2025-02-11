@@ -1,0 +1,30 @@
+{
+  "col_headers": [
+    "Rk",
+    "Player",
+    "Nation",
+    "Position",
+    "Team",
+    "League",
+    "Age",
+    "Birth Year",
+    "90s",
+    "Passes Attempted",
+    "Live-Ball Passes",
+    "Dead-Ball Passes",
+    "Passes from Free Kicks",
+    "Through Balls",
+    "Switches",
+    "Crosses",
+    "Throw-Ins",
+    "Corner Kicks",
+    "Inswing Corner Kicks",
+    "Outswing Corner Kicks",
+    "Straight Corner Kicks",
+    "Passes Completed",
+    "Passes Offside",
+    "Passes Blocked",
+    "Matches"
+  ],
+  "col_remove": ["Passes Attempted", "Passes Completed"]
+}

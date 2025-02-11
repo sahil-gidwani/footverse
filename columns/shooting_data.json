@@ -1,0 +1,31 @@
+{
+  "col_headers": [
+    "Rk",
+    "Player",
+    "Nation",
+    "Position",
+    "Team",
+    "League",
+    "Age",
+    "Birth Year",
+    "90s",
+    "Goals",
+    "Shots",
+    "Shots on Target",
+    "Shots on Target %",
+    "Shots p90",
+    "Shots on Target p90",
+    "Goals per Shot",
+    "Goals per Shot on Target",
+    "Average Shot Distance",
+    "Shots from Free Kicks",
+    "Penalties Scored",
+    "Penalties Attempted",
+    "xG",
+    "npxG",
+    "npxG per Shot",
+    "G-xG",
+    "np:G-xG",
+    "Matches"
+  ]
+}

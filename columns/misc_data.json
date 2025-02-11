@@ -1,0 +1,31 @@
+{
+  "col_headers": [
+    "Rk",
+    "Player",
+    "Nation",
+    "Position",
+    "Team",
+    "League",
+    "Age",
+    "Birth Year",
+    "90s",
+    "Yellow Cards",
+    "Red Cards",
+    "Second Yellow Cards",
+    "Fouls Committed",
+    "Fouls Drawn",
+    "Offsides",
+    "Crosses",
+    "Interceptions",
+    "Tackles Won",
+    "Pens Won",
+    "Pens Conceded",
+    "Own Goals",
+    "Ball Recoveries",
+    "Aerials Won",
+    "Aerials Lost",
+    "Aerial Win %",
+    "Matches"
+  ],
+  "col_remove": ["Crosses", "Interceptions", "Tackles Won"]
+}

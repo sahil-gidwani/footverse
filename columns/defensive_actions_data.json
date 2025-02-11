@@ -1,0 +1,30 @@
+{
+  "col_headers": [
+    "Rk",
+    "Player",
+    "Nation",
+    "Position",
+    "Team",
+    "League",
+    "Age",
+    "Birth Year",
+    "90s",
+    "Tackles",
+    "Tackles Won",
+    "Tackles Def 3rd",
+    "Tackles Mid 3rd",
+    "Tackles Att 3rd",
+    "Dribbles Tackled",
+    "Dribbles Challenged",
+    "Dribbles Tackle %",
+    "Dribbles Challenges Lost",
+    "Blocks",
+    "Blocks Shots",
+    "Blocks Passes",
+    "Interceptions",
+    "Tackles + Interceptions",
+    "Clearances",
+    "Errors Leading To Shot",
+    "Matches"
+  ]
+}
