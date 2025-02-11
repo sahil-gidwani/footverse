@@ -30,40 +30,52 @@ def random_selection():
     players = sorted(df.loc[df['Primary Position'] == position, 'Player'].unique())
 
     if not players:
-        return random_selection()  # Recursively select again if no players found
+        return random_selection()
 
     player = random.choice(players)
     return league, team, position, player
 
-# Ensure player1 and player2 are different
-while True:
-    league1, team1, position1, player1 = random_selection()
-    league2, team2, position2, player2 = random_selection()
-    
-    if player1 != player2:
-        break  # Ensure different players are selected
+# Initialize session state for players if not already set
+if 'player1' not in st.session_state or 'player2' not in st.session_state:
+    while True:
+        league1, team1, position1, player1 = random_selection()
+        league2, team2, position2, player2 = random_selection()
+        if player1 != player2:
+            st.session_state.player1 = (league1, team1, position1, player1)
+            st.session_state.player2 = (league2, team2, position2, player2)
+            break
 
-def player_selection(column, key, league, team, position, player):
+def player_selection(column, key):
     """Handles league, team, position, and player selection within a column."""
+    league, team, position, player = st.session_state[key]
+    
     with column:
-        selected_league = st.radio("Select League:", sorted(merged_df['League'].unique()), key=f"{key}_league", index=list(sorted(merged_df['League'].unique())).index(league))
-        selected_team = st.selectbox("Select Team:", sorted(merged_df.loc[merged_df['League'] == selected_league, 'Team'].unique()), key=f"{key}_team", index=list(sorted(merged_df.loc[merged_df['League'] == selected_league, 'Team'].unique())).index(team))
+        selected_league = st.radio("Select League:", sorted(merged_df['League'].unique()), key=f"{key}_league", 
+                                   index=list(sorted(merged_df['League'].unique())).index(league))
+        selected_team = st.selectbox("Select Team:", sorted(merged_df.loc[merged_df['League'] == selected_league, 'Team'].unique()), 
+                                     key=f"{key}_team", 
+                                     index=list(sorted(merged_df.loc[merged_df['League'] == selected_league, 'Team'].unique())).index(team))
 
         df = merged_df.query("League == @selected_league and Team == @selected_team").copy()
         df['Primary Position'] = df['Position'].str.split(',').str[0]
 
-        selected_position = st.selectbox("Select Position:", ['GK', 'DF', 'MF', 'FW'], key=f"{key}_position", index=['GK', 'DF', 'MF', 'FW'].index(position))
+        selected_position = st.selectbox("Select Position:", ['GK', 'DF', 'MF', 'FW'], key=f"{key}_position", 
+                                         index=['GK', 'DF', 'MF', 'FW'].index(position))
         players = sorted(df.loc[df['Primary Position'] == selected_position, 'Player'].unique())
+        
+        if key == "player2" and st.session_state.player1[3] in players:
+            players.remove(st.session_state.player1[3])
 
-        if key == "player2" and player1 in players:
-            players.remove(player1)
-
-        selected_player = st.selectbox("Select Player:", players, key=f"{key}_player", index=players.index(player) if player in players else 0)
+        selected_player = st.selectbox("Select Player:", players, key=f"{key}_player", 
+                                       index=players.index(player) if player in players else 0)
+        
+        st.session_state[key] = (selected_league, selected_team, selected_position, selected_player)
+        
         return df[df['Player'] == selected_player].reset_index(drop=True), selected_player
 
 lc, rc = st.columns(2)
-player1_df, player1 = player_selection(lc, "player1", league1, team1, position1, player1)
-player2_df, player2 = player_selection(rc, "player2", league2, team2, position2, player2)
+player1_df, player1 = player_selection(lc, "player1")
+player2_df, player2 = player_selection(rc, "player2")
 
 st.markdown("---")
 
@@ -83,12 +95,20 @@ def highlight(row):
 
 def plot_radar_chart(columns):
     """Plots a radar chart comparing two players based on selected stats."""
+    normalize = st.checkbox(label="Normalize Values", help="Normalize values to a common scale for comparison.", value=True)
     
     # Allow users to filter specific stats
-    selected_stats = st.multiselect("Choose stats:", stats_columns, default=columns) if st.checkbox("Select Specific Stats") else columns
+    selected_stats = st.multiselect("Choose stats:", stats_columns, default=columns) if st.checkbox(label="Select Specific Stats", help="Select specific stats to compare.", value=False) else columns
 
     # Extract selected stats only
     stats_p1, stats_p2 = player1_df[selected_stats], player2_df[selected_stats]
+
+    # Normalize values if checkbox is selected
+    if normalize:
+        min_vals = merged_df[selected_stats].min()
+        max_vals = merged_df[selected_stats].max()
+        stats_p1 = (stats_p1 - min_vals) / (max_vals - min_vals)
+        stats_p2 = (stats_p2 - min_vals) / (max_vals - min_vals)
 
     # Handle missing data
     if stats_p1.empty or stats_p2.empty:
@@ -116,8 +136,7 @@ def plot_radar_chart(columns):
 
     st.plotly_chart(fig, use_container_width=True)
 
-    # Ensure comparison_df only has two columns before renaming
-    comparison_df = pd.DataFrame({player1: stats_p1.values.flatten(), player2: stats_p2.values.flatten()}, index=selected_stats)
+    comparison_df = pd.DataFrame({player1: player1_df[selected_stats].values.flatten(), player2: player2_df[selected_stats].values.flatten()}, index=selected_stats)
 
     with st.expander("Comparison Table", expanded=False):
         st.dataframe(comparison_df.style.apply(highlight, axis=1).format(precision=2))
