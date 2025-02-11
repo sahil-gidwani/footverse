@@ -7,7 +7,7 @@ st.set_page_config(page_title="Footverse", page_icon="⚽", layout="wide")
 # Title and Subtitle
 st.title("⚽ :red[Footverse]")
 st.caption("Unlock the Power of Football Analytics – Dive into the Numbers Behind the Game! ⚽📊")
-st.markdown("---")
+st.divider()
 
 # Ensure data is loaded into session state
 if 'merged_data' not in st.session_state:
@@ -44,7 +44,7 @@ st.write("""
 
 st.success("🏁 **Start Exploring Now!** Dive into the stats and discover football like never before! ⚽🚀")
 
-# st.markdown("---")
+# st.divider()
 # st.subheader("📊 Data Preview")
 # st.write(st.session_state.merged_data)
 

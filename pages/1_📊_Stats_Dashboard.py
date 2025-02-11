@@ -2,11 +2,13 @@ import streamlit as st
 import plotly.express as px
 from data.data_loader import store_session_data
 
+# Page Configuration
 st.set_page_config(page_title="Stats Dashboard", page_icon="📊", layout="wide")
 
-st.title("📊 Stats Dashboard")
-st.caption("Explore Football Data with Interactive Visualizations! 📈")
-st.markdown("---")
+# Title and Subtitle
+st.title("📊 **Stats Dashboard**")
+st.caption("Uncover insights, compare performances, and explore football analytics like never before! ⚽📈")
+st.divider()
 
 # Load data if not in session state
 if 'merged_data' not in st.session_state:
@@ -22,14 +24,14 @@ def unique_sorted_list(column):
 
 # Sidebar Filters
 with st.sidebar:
-    st.write('__Filters__')
+    st.subheader("🎯 **Refine Your Search**")
 
     filters = {
-        "Leagues": st.pills("Leagues", options=unique_sorted_list('League'), selection_mode='multi'),
-        "Teams": st.multiselect("Teams", options=unique_sorted_list('Team'), placeholder="Select Teams"),
-        "Nations": st.multiselect("Nations", options=unique_sorted_list('Nationality'), placeholder="Select Nations"),
-        "Positions": st.segmented_control("Positions", options=['GK', 'DF', 'MF', 'FW'], selection_mode='multi'),
-        "Age": st.slider("Select Age Range", 15, 50, (15, 50))
+        "Leagues": st.pills("🌍 Select Leagues", options=unique_sorted_list('League'), selection_mode='multi'),
+        "Teams": st.multiselect("🏆 Choose Teams", options=unique_sorted_list('Team'), placeholder="Pick your favorite teams"),
+        "Nations": st.multiselect("🌎 Select Nationalities", options=unique_sorted_list('Nationality'), placeholder="Filter by country"),
+        "Positions": st.segmented_control("⚽ Player Positions", options=['GK', 'DF', 'MF', 'FW'], selection_mode='multi'),
+        "Age": st.slider("📅 Age Range", 15, 50, (15, 50), help="Select the age range of players to analyze.")
     }
 
 # Apply Filters
@@ -53,17 +55,34 @@ if filters["Age"] != (15, 50):
 filtered_df.drop(columns=['Primary Position'], errors='ignore', inplace=True)
 
 # Statistic Selection
-stat = st.selectbox("Select a Statistic", options=stats_columns, help="Select a statistic to visualize.", index=4)
-top_n = st.slider("Select Number of Players", 3, 50, 10, help="Select the number of players to display.")
+st.subheader("🔢 **Dive Into The Numbers!**")
+st.info("Choose a statistic to visualize and analyze player performance like a pro! 🔍")
+
+stat = st.selectbox("📈 **Select a Key Performance Metric**", options=stats_columns, help="Pick a statistic to compare players.", index=4)
+top_n = st.slider("🏅 **How Many Players to Display?**", 3, 50, 10, help="Adjust the number of top-performing players shown.")
 
 if 'p90' in stat:
-    min_minutes = st.slider("Select Minimum Minutes Played", 0, int(filtered_df['Minutes'].max()), int(filtered_df['Minutes'].mean()))
+    min_minutes = st.slider("⏳ **Minimum Minutes Played**", 0, int(filtered_df['Minutes'].max()), int(filtered_df['Minutes'].mean()), help="Filter players based on game time.")
     filtered_df = filtered_df[filtered_df['Minutes'] >= min_minutes]
 
+st.divider()
+
 # Plot Chart
-stat_chart = px.bar(filtered_df.nlargest(top_n, stat), x='Player', y=stat, hover_data=['Position', 'Team', 'Age'], color='League')
+st.markdown(f"### 🏆 **Top {top_n} Players in {stat}**")
+st.success("Here’s a breakdown of the best-performing players based on your selected metric!")
+
+stat_chart = px.bar(
+    filtered_df.nlargest(top_n, stat), 
+    x='Player', 
+    y=stat, 
+    hover_data=['Position', 'Team', 'Age'], 
+    color='League',
+    title=f"Top {top_n} Players by {stat}"
+)
 st.plotly_chart(stat_chart, use_container_width=True)
 
 # Display Data
-with st.expander(f"View *__Top Players by {stat}__*", expanded=False):
+with st.expander(f"📜 **View Complete List of Top Players by {stat}**", expanded=False):
     st.write(filtered_df.iloc[:, :6].join(filtered_df[[stat]]).sort_values(stat, ascending=False))
+
+st.divider()
