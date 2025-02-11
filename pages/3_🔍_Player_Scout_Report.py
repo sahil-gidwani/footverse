@@ -1,5 +1,6 @@
 import streamlit as st
 import random
+import pandas as pd
 from data.data_loader import store_session_data
 
 st.set_page_config(page_title="Player Scout Report", page_icon="🔍", layout="wide")
@@ -13,6 +14,8 @@ if 'merged_data' not in st.session_state or 'data' not in st.session_state:
     store_session_data()
 
 merged_df = st.session_state.merged_data
+goalkeeping_columns = st.session_state.goalkeeping_columns
+outfield_columns = st.session_state.outfield_columns
 data = st.session_state.data
 stats_columns = merged_df.columns[7:]
 
@@ -85,6 +88,12 @@ with st.sidebar:
     else:
         st.session_state.selected_player = None
 
+@st.cache_data(show_spinner="Analyzing Data...")
+def calculate_percentile_ranks(df, position):
+    """Calculates percentile ranks for each player within their position group."""
+    position_df = df[df['Primary Position'] == position]  # Filter players by position
+    return position_df[stats_columns].rank(pct=True) * 100
+
 # Apply Filters
 filtered_df = merged_df[
     (merged_df['League'] == st.session_state.selected_league) &
@@ -93,10 +102,64 @@ filtered_df = merged_df[
     (merged_df['Player'] == st.session_state.selected_player)
 ]
 
-st.write(f"Showing data for **{st.session_state.selected_player}** from {st.session_state.selected_team} ({st.session_state.selected_league})")
-st.dataframe(filtered_df)
+# Calculate Percentile Ranks for Selected Position
+position_percentiles = calculate_percentile_ranks(merged_df, st.session_state.selected_position)
 
-@st.cache_data(show_spinner="Analyzing Data...")
-def calculate_percentile_ranks(df):
-	"""Calculates percentile ranks for each player across all statistics."""
-	return df[stats_columns].rank(pct=True) * 100
+merged_df.drop(columns=['Primary Position'], errors='ignore', inplace=True)
+filtered_df.drop(columns=['Primary Position'], errors='ignore', inplace=True)
+
+# Merge Percentile Ranks with Filtered Data
+filtered_df = filtered_df.merge(position_percentiles, left_index=True, right_index=True, suffixes=("", " Percentile"))
+
+st.write(f"Showing data for **{st.session_state.selected_player}** from {st.session_state.selected_team} ({st.session_state.selected_league})")
+# st.write(filtered_df)
+
+# Extract statistics and their corresponding percentile columns
+stats_columns = stats_columns.tolist()
+if st.session_state.selected_position == 'GK':
+	stats_columns = list(pd.Index(stats_columns).intersection(goalkeeping_columns))
+else:
+	stats_columns = list(pd.Index(stats_columns).intersection(outfield_columns))
+percentile_columns = [col + " Percentile" for col in stats_columns]
+
+# Extract values using column names instead of iloc
+stats_values = filtered_df[stats_columns].values.flatten().tolist()
+percentile_values = filtered_df[percentile_columns].values.flatten().tolist()
+
+# Create DataFrame
+scout_report_df = pd.DataFrame({'Statistics': stats_columns, 'Value': stats_values, 'Percentile': percentile_values})
+scout_report_df.set_index('Statistics', inplace=True)
+
+# Display the Scout Report
+with st.expander("View *__Scout Report__*", expanded=True):
+	st.dataframe(
+		scout_report_df.style
+		.format({'Percentile': lambda x: f"{x:.2f}%"})
+		.background_gradient(cmap='RdYlGn', subset=['Percentile'])
+		.format(precision=2, subset=['Value'])
+	)
+
+# 🎯 **Dynamically Generate Expanders from Session Data**
+if "data" in st.session_state:
+    dataset_names = list(st.session_state.data.keys())
+    
+    # Apply dataset filtering based on selected position
+    if st.session_state.selected_position == "GK":
+        dataset_names = dataset_names[:] # Include all datasets
+    else:
+        dataset_names = dataset_names[:-2]  # Exclude last 2 datasets
+
+    for dataset_name in dataset_names:
+        df = st.session_state.data[dataset_name]
+        if not df.empty:  # Ensure dataframe has data
+            with st.expander(str(dataset_name).replace(" Data", '')):
+                # Extract relevant statistics from scout_report_df
+                valid_columns = [col for col in scout_report_df.index if col in df.columns]
+
+                # Display corresponding stats with formatting
+                st.dataframe(
+                    scout_report_df.loc[valid_columns].style
+                    .format({'Percentile': "{:.2f}%"})
+                    .background_gradient(cmap='RdYlGn', subset=['Percentile'])
+                    .format(precision=2, subset=['Value'])
+                )
