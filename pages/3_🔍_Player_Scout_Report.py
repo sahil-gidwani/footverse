@@ -16,6 +16,9 @@ merged_df = st.session_state.merged_data
 data = st.session_state.data
 stats_columns = merged_df.columns[7:]
 
+# Extract Primary Position
+merged_df['Primary Position'] = merged_df['Position'].str.split(',').str[0]
+
 # Helper function to get unique sorted values
 def unique_sorted_list(column, condition=None):
     """Returns a sorted list of unique values for the given column, with an optional filtering condition."""
@@ -49,24 +52,36 @@ if 'selected_league' not in st.session_state:
 with st.sidebar:
     st.write('__Filters__')
 
-    st.session_state.selected_league = st.radio("Select League", unique_sorted_list('League'), 
-                                                index=unique_sorted_list('League').index(st.session_state.selected_league))
+    # League Selection
+    st.session_state.selected_league = st.radio(
+        "Select League", unique_sorted_list('League'), 
+        index=unique_sorted_list('League').index(st.session_state.selected_league)
+    )
 
+    # Team Selection (Ensure selected team exists in the league)
     teams_in_league = unique_sorted_list('Team', condition=(merged_df['League'] == st.session_state.selected_league))
-    st.session_state.selected_team = st.selectbox("Select Team", teams_in_league, 
-                                                  index=teams_in_league.index(st.session_state.selected_team))
+    st.session_state.selected_team = st.selectbox(
+        "Select Team", teams_in_league, 
+        index=teams_in_league.index(st.session_state.selected_team) if st.session_state.selected_team in teams_in_league else 0
+    )
 
+    # Position Selection
     positions = ['GK', 'DF', 'MF', 'FW']
-    st.session_state.selected_position = st.selectbox("Select Position", positions, 
-                                                      index=positions.index(st.session_state.selected_position))
+    st.session_state.selected_position = st.selectbox(
+        "Select Position", positions, 
+        index=positions.index(st.session_state.selected_position)
+    )
 
+    # Player Selection (Ensure selected player exists)
     players_in_team = unique_sorted_list('Player', condition=(merged_df['League'] == st.session_state.selected_league) & 
                                                           (merged_df['Team'] == st.session_state.selected_team) & 
-                                                          (merged_df['Position'].str.contains(st.session_state.selected_position)))
+                                                          (merged_df['Primary Position'] == st.session_state.selected_position))
     
     if players_in_team:
-        st.session_state.selected_player = st.selectbox("Select Player", players_in_team, 
-                                                        index=players_in_team.index(st.session_state.selected_player) if st.session_state.selected_player in players_in_team else 0)
+        st.session_state.selected_player = st.selectbox(
+            "Select Player", players_in_team, 
+            index=players_in_team.index(st.session_state.selected_player) if st.session_state.selected_player in players_in_team else 0
+        )
     else:
         st.session_state.selected_player = None
 
@@ -81,3 +96,7 @@ filtered_df = merged_df[
 st.write(f"Showing data for **{st.session_state.selected_player}** from {st.session_state.selected_team} ({st.session_state.selected_league})")
 st.dataframe(filtered_df)
 
+@st.cache_data(show_spinner="Analyzing Data...")
+def calculate_percentile_ranks(df):
+	"""Calculates percentile ranks for each player across all statistics."""
+	return df[stats_columns].rank(pct=True) * 100
