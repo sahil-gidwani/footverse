@@ -9,13 +9,13 @@ st.title("⚖️ Player Comparison")
 st.caption("Compare Football Players Side-by-Side! 🔄")
 st.markdown("---")
 
-# Load data if not in session state
+# Load data if not available in session state
 if 'merged_data' not in st.session_state or 'data' not in st.session_state:
     store_session_data()
 
-# Retrieve session data
 merged_df = st.session_state.merged_data
 data = st.session_state.data
+stats_columns = merged_df.columns[7:]
 
 def player_selection(column, key):
     """Handles league, team, position, and player selection within a column."""
@@ -23,7 +23,7 @@ def player_selection(column, key):
         league = st.radio("Select League:", sorted(merged_df['League'].unique()), key=f"{key}_league")
         team = st.selectbox("Select Team:", sorted(merged_df.loc[merged_df['League'] == league, 'Team'].unique()), key=f"{key}_team")
 
-        df = merged_df[(merged_df['League'] == league) & (merged_df['Team'] == team)]
+        df = merged_df.query("League == @league and Team == @team").copy()
         df['Primary Position'] = df['Position'].str.split(',').str[0]
 
         position = st.selectbox("Select Position:", ['GK', 'DF', 'MF', 'FW'], key=f"{key}_position")
@@ -42,75 +42,65 @@ player2_df, player2 = player_selection(rc, "player2")
 st.markdown("---")
 
 def highlight(row):
-    """Highlights the greater value in green and the lesser in red for each stat."""
-    val1, val2 = row.iloc[0], row.iloc[1]  # Get the two values being compared
+    """Highlights the greater value in green, the lesser in red, and keeps equal values neutral."""
+    val1, val2 = row.iloc[0], row.iloc[1]
+
+    if pd.isna(val1) or pd.isna(val2):
+        return ['color: gray;'] * 2  # Gray for missing values
     
-    styles = ['', '']  # Default empty styles for both values
-
-    if pd.isna(val1) or pd.isna(val2):  # Handle missing values
-        return ['color: gray;' for _ in row]  
-
     if val1 > val2:
-        styles[0] = 'color: lawngreen; font-weight: bold;'  # Player 1 wins
-        styles[1] = 'color: red;'  # Player 2 loses
+        return ['color: lawngreen; font-weight: bold;', 'color: red;']
     elif val2 > val1:
-        styles[0] = 'color: red;'  # Player 1 loses
-        styles[1] = 'color: lawngreen; font-weight: bold;'  # Player 2 wins
-
-    return styles
+        return ['color: red;', 'color: lawngreen; font-weight: bold;']
+    else:  # Equal values
+        return ['color: white; font-weight: bold;'] * 2  # Neutral styling for equal values
 
 def plot_radar_chart(columns):
     """Plots a radar chart comparing two players based on selected stats."""
     
-    # Ensure valid column selection
-    stats_p1 = player1_df[columns] if all(col in player1_df.columns for col in columns) else pd.DataFrame()
-    stats_p2 = player2_df[columns] if all(col in player2_df.columns for col in columns) else pd.DataFrame()
+    # Allow users to filter specific stats
+    selected_stats = st.multiselect("Choose stats:", stats_columns, default=columns) if st.checkbox("Select Specific Stats") else columns
+
+    # Extract selected stats only
+    stats_p1, stats_p2 = player1_df[selected_stats], player2_df[selected_stats]
 
     # Handle missing data
     if stats_p1.empty or stats_p2.empty:
         st.warning("Selected players do not have data for this category.")
         return
-    
-    # Allow users to select specific stats
-    selected_stats = st.multiselect("Choose stats:", columns, default=columns) if st.checkbox(label="Select Specific Stats", value=False, help="Choose specific stats to compare.") else columns
 
-    # Radar chart
+    # Radar chart with contrasting colors
     fig = go.Figure()
-    for player, stats in zip([player1, player2], [stats_p1, stats_p2]):
+    colors = ['rgba(0, 191, 255, 0.4)', 'rgba(255, 69, 0, 0.4)']  # Semi-transparent colors
+
+    for player, stats, color in zip([player1, player2], [stats_p1, stats_p2], colors):
         fig.add_trace(go.Scatterpolar(
-            r=stats[selected_stats].values.flatten(), 
+            r=stats.values.flatten(), 
             theta=selected_stats, 
             fill='toself', 
-            name=player
+            name=player,
+            fillcolor=color,
+            line=dict(color=color.replace("0.4", "1"), width=2)
         ))
-    
+
     fig.update_layout(
-        polar=dict(bgcolor='#1e2130', radialaxis=dict(visible=True)),
+        polar=dict(bgcolor='#1e2130', radialaxis=dict(visible=True, showline=True, linewidth=1, linecolor='white')),
         showlegend=True
     )
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-    # Create comparison DataFrame
-    comparison_df = pd.concat([stats_p1, stats_p2], axis=0).T
-    comparison_df.columns = [player1, player2]
 
-    # Apply highlighting in expander section
+    st.plotly_chart(fig, use_container_width=True)
+
+    # Ensure comparison_df only has two columns before renaming
+    comparison_df = pd.DataFrame({player1: stats_p1.values.flatten(), player2: stats_p2.values.flatten()}, index=selected_stats)
+
     with st.expander("Comparison Table", expanded=False):
         st.dataframe(comparison_df.style.apply(highlight, axis=1).format(precision=2))
 
 if 'data' in st.session_state:
-    # Remove " Data" from category names and extract column lists
-    df_columns = {name.replace(" Data", ""): list(df.columns) for name, df in st.session_state.data.items()}
-
-    # Extract category names dynamically
+    df_columns = {name.replace(" Data", ""): list(df.columns) for name, df in data.items()}
     categories = list(df_columns.keys())
 
-    # Select category dynamically
-    category_choice = st.selectbox(label="Select a Category", options=categories, index=0, help="Select a category to compare players.")
-
-	# Get selected category columns, excluding the first 7 for "Standard" and "Goalkeeping"
+    category_choice = st.selectbox("Select a Category", categories, index=0, help="Select a category to compare players.")
     selected_columns = df_columns[category_choice][7:] if category_choice in ["Standard", "Goalkeeping"] else df_columns[category_choice]
 
-    # Plot radar chart dynamically with column names
     plot_radar_chart(selected_columns)
