@@ -52,9 +52,12 @@ def player_selection(column, key):
     with column:
         selected_league = st.radio("Select League:", sorted(merged_df['League'].unique()), key=f"{key}_league", 
                                    index=list(sorted(merged_df['League'].unique())).index(league))
-        selected_team = st.selectbox("Select Team:", sorted(merged_df.loc[merged_df['League'] == selected_league, 'Team'].unique()), 
-                                     key=f"{key}_team", 
-                                     index=list(sorted(merged_df.loc[merged_df['League'] == selected_league, 'Team'].unique())).index(team))
+        
+        teams = sorted(merged_df.loc[merged_df['League'] == selected_league, 'Team'].unique())
+        # Ensure the selected team exists in the filtered list, otherwise default to the first available team
+        selected_team = st.selectbox("Select Team:", teams, 
+									key=f"{key}_team", 
+									index=teams.index(team) if team in teams else 0)
 
         df = merged_df.query("League == @selected_league and Team == @selected_team").copy()
         df['Primary Position'] = df['Position'].str.split(',').str[0]
