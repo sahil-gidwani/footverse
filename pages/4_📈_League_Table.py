@@ -70,8 +70,15 @@ for i, (league_name, league_code) in enumerate(league_codes.items()):
 
             # Display competition details
             # st.markdown(f"## 🏆 {competition['name']} Standings")
-            st.image(competition_logo, width=150)
-            st.markdown(f"**Season:** {current_season}  \n**Current Matchday:** {current_matchday}")
+            col1, col2, col3 = st.columns([1, 1, 1])
+            with col2:
+                img_bg_style = "background-color: white; padding: 10px; border-radius: 10px;" if st_theme in ["dark", "light"] else ""
+                st.markdown(f"""
+                    <div>
+                        <img src="{competition_logo}" width="150" style="{img_bg_style}">
+                    </div>
+                """, unsafe_allow_html=True)
+            st.markdown(f"**Season:** {current_season} | **Matchday:** {current_matchday}")
 
             # Extract team standings
             teams = standings_data["standings"][0]["table"]

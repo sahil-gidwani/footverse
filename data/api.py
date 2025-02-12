@@ -9,12 +9,13 @@ if "api_request_timestamps" not in st.session_state:
 API_BASE_URL = "https://api.football-data.org/v4"
 HEADERS = {"X-Auth-Token": st.secrets["API_FOOTBALL_DATA_KEY"]}
 
-if "api_request_timestamps" not in st.session_state:
-	st.session_state.api_request_timestamps = []
-
 @st.cache_data(show_spinner="Loading data...", ttl=3600*24*1)
 def rate_limited_request(endpoint, params=None, max_retries=3, base_delay=2):
     """Makes a rate-limited API request with retries."""
+    
+    if "api_request_timestamps" not in st.session_state:
+        st.session_state.api_request_timestamps = []
+    
     if params is None:
         params = {}
 
