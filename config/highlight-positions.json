@@ -1,0 +1,54 @@
+{
+  "PL": {
+    "top": [1, 2, 3, 4],
+    "europa": [5],
+    "conference": [6],
+    "relegation": [18, 19, 20]
+  },
+  "CL": {
+    "top": [1, 2, 3, 4, 5, 6, 7, 8],
+    "europa": [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+    "relegation": [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]
+  },
+  "SA": {
+    "top": [1, 2, 3, 4],
+    "europa": [5],
+    "conference": [6],
+    "relegation": [18, 19, 20]
+  },
+  "PD": {
+    "top": [1, 2, 3, 4],
+    "europa": [5],
+    "conference": [6],
+    "relegation": [18, 19, 20]
+  },
+  "BL1": {
+    "top": [1, 2, 3, 4],
+    "europa": [5],
+    "conference": [6],
+    "relegation": [16, 17, 18]
+  },
+  "FL1": {
+    "top": [1, 2, 3],
+    "europa": [4],
+    "conference": [5],
+    "relegation": [16, 17, 18]
+  },
+  "PPL": {
+    "top": [1, 2],
+    "europa": [3],
+    "conference": [4],
+    "relegation": [16, 17, 18]
+  },
+  "DED": {
+    "top": [1, 2],
+    "europa": [3],
+    "conference": [4],
+    "relegation": [16, 17, 18]
+  },
+  "ELC": {
+    "top": [1, 2],
+    "europa": [3, 4, 5, 6],
+    "relegation": [22, 23, 24]
+  }
+}

@@ -3,7 +3,7 @@ import random
 import pandas as pd
 from data.data_loader import store_session_data
 
-st.set_page_config(page_title="⚽ Player Scout Report", page_icon="🔍", layout="wide")
+st.set_page_config(page_title="Player Scout Report", page_icon="🔍", layout="wide")
 
 st.title("🔍 Player Scout Report")
 st.caption("Uncover hidden gems and analyze football players with advanced scouting insights! 📊")
