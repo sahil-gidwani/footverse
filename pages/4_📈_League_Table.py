@@ -125,3 +125,5 @@ for i, (league_name, league_code) in enumerate(league_codes.items()):
             st.dataframe(styled_df, column_config=column_config)
         else:
             st.warning(f"⚠️ Unable to fetch data for {league_name}.")
+
+st.divider()

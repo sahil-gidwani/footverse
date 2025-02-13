@@ -124,17 +124,29 @@ def plot_radar_chart(columns):
         default=columns
     ) if st.checkbox("🎛️ **Filter Specific Stats**", help="Choose only the stats you want to compare.", value=False) else columns
 
+    # Get positions of both players
+    pos1, pos2 = st.session_state.player1[2], st.session_state.player2[2]
+    
+    # Filter dataset by player positions
+    merged_df['Primary Position'] = merged_df['Position'].str.split(',').str[0]
+    pos1_df = merged_df[merged_df['Primary Position'] == pos1]
+    pos2_df = merged_df[merged_df['Primary Position'] == pos2]
+
     stats_p1, stats_p2 = player1_df[selected_stats], player2_df[selected_stats]
 
     if normalize:
-        min_vals = merged_df[selected_stats].min()
-        max_vals = merged_df[selected_stats].max()
-        stats_p1 = (stats_p1 - min_vals) / (max_vals - min_vals)
-        stats_p2 = (stats_p2 - min_vals) / (max_vals - min_vals)
+        # Normalize each player's stats based on their position group
+        min_vals_p1, max_vals_p1 = pos1_df[selected_stats].min(), pos1_df[selected_stats].max()
+        min_vals_p2, max_vals_p2 = pos2_df[selected_stats].min(), pos2_df[selected_stats].max()
 
+        stats_p1 = (stats_p1 - min_vals_p1) / (max_vals_p1 - min_vals_p1)
+        stats_p2 = (stats_p2 - min_vals_p2) / (max_vals_p2 - min_vals_p2)
+    
     if stats_p1.empty or stats_p2.empty:
         st.warning("⚠️ No data available for selected players in this category!")
         return
+    
+    merged_df.drop(columns=['Primary Position'], inplace=True)
 
     fig = go.Figure()
     colors = ['rgba(0, 191, 255, 0.4)', 'rgba(255, 69, 0, 0.4)']
