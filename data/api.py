@@ -29,7 +29,7 @@ def rate_limited_request(endpoint, params=None, max_retries=3, base_delay=2):
     # Enforce the 10 requests per minute limit
     if len(st.session_state.api_request_timestamps) >= 10:
         wait_time = 60 - (current_time - st.session_state.api_request_timestamps[0])
-        st.warning(f"⚠️ Rate limit reached! Waiting {wait_time:.2f} seconds...")
+        # st.warning(f"⚠️ Rate limit reached! Waiting {wait_time:.2f} seconds...")
         time.sleep(wait_time)
 
     # Exponential backoff for retries
@@ -42,12 +42,12 @@ def rate_limited_request(endpoint, params=None, max_retries=3, base_delay=2):
 
         elif response.status_code == 429:  # Too many requests
             wait_time = base_delay * (2 ** attempt)
-            st.warning(f"⚠️ Too many requests! Retrying in {wait_time:.2f} seconds...")
+            # st.warning(f"⚠️ Too many requests! Retrying in {wait_time:.2f} seconds...")
             time.sleep(wait_time)
 
         else:
             st.error(f"⚠️ Error {response.status_code}: {response.reason}")
             return None
 
-    st.error("🚫 Maximum retries reached. Try again later.")
+    # st.error("🚫 Maximum retries reached. Try again later.")
     return None

@@ -40,7 +40,7 @@ def fetch_with_retries(url, max_retries=5, base_delay=2):
 
     if len(st.session_state.request_timestamps) >= 10:
         wait_time = 60 - (current_time - st.session_state.request_timestamps[0])
-        st.warning(f"⚠️ Rate limit reached! Waiting {wait_time:.2f} seconds before next request...")
+        # st.warning(f"⚠️ Rate limit reached! Waiting {wait_time:.2f} seconds before next request...")
         time.sleep(wait_time)
 
     # Exponential backoff with jitter for retries
@@ -53,14 +53,14 @@ def fetch_with_retries(url, max_retries=5, base_delay=2):
 
         elif response.status_code == 429:  # Too Many Requests
             wait_time = base_delay * (2 ** attempt) + random.uniform(0, 1)  # Exponential backoff with jitter
-            st.warning(f"⚠️ Too many requests! Retrying in {wait_time:.2f} seconds... (Attempt {attempt+1}/{max_retries})")
+            # st.warning(f"⚠️ Too many requests! Retrying in {wait_time:.2f} seconds... (Attempt {attempt+1}/{max_retries})")
             time.sleep(wait_time)  # Wait before retrying
 
         else:  # Other errors
             st.error(f"⚠️ Failed to fetch data (Error {response.status_code}): {response.reason}")
             return None
 
-    st.error("🚫 Maximum retries reached. Try again later.")
+    # st.error("🚫 Maximum retries reached. Try again later.")
     return None
 
 
