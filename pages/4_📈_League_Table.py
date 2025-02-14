@@ -52,6 +52,13 @@ def highlight_rows(row, league_code):
     
     return [''] * len(row)
 
+# Function to convert form to points
+def form_to_points(form):
+    if not form:
+        return []
+    form_list = form.split(",")
+    return [3 if result == "W" else 1 if result == "D" else 0 for result in form_list]
+
 # Create tabs for each league
 tabs = st.tabs(list(league_codes.keys()))
 
@@ -134,7 +141,8 @@ for i, (league_name, league_code) in enumerate(league_codes.items()):
                 "Points": team["points"],
                 "Goals For": team["goalsFor"],
                 "Goals Against": team["goalsAgainst"],
-                "Goal Difference": team["goalDifference"]
+                "Goal Difference": team["goalDifference"],
+                "Form": team["form"],
             }
             for team in teams
         ])
@@ -142,7 +150,9 @@ for i, (league_name, league_code) in enumerate(league_codes.items()):
         # Drop duplicate positions and set index
         df = df.drop_duplicates(subset=["Position"])
         df.set_index("Position", inplace=True)
-
+        
+        df['Form'] = df['Form'].apply(form_to_points)
+        
         # Column configuration for the DataFrame
         column_config = {
             "Crest": st.column_config.ImageColumn("Logo"),
@@ -155,6 +165,7 @@ for i, (league_name, league_code) in enumerate(league_codes.items()):
             "Goals For": st.column_config.NumberColumn("Goals For"),
             "Goals Against": st.column_config.NumberColumn("Goals Against"),
             "Goal Difference": st.column_config.NumberColumn("Goal Difference"),
+            "Form": st.column_config.LineChartColumn("Form", y_min=0, y_max=3, help="Form in the last 5 matches"),
         }
 
         # Apply colors to the DataFrame
