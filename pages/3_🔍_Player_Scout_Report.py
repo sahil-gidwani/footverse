@@ -102,7 +102,7 @@ scout_report_df.set_index('Statistics', inplace=True)
 
 with st.expander("📊 __Detailed Scout Report__", expanded=True):
     st.dataframe(
-        scout_report_df.style
+        scout_report_df.sort_values(by="Percentile", ascending=False).style
         .format({'Percentile': lambda x: f"{x:.2f}%"})
         .background_gradient(cmap='RdYlGn', subset=['Percentile'])
         .format(precision=2, subset=['Value'])
