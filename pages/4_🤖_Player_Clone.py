@@ -128,6 +128,8 @@ selected_stats = [
 if not selected_stats:
     st.warning("⚠️ No valid stats selected for comparison!")
 
+st.divider()
+
 # Reset indexes for comparison
 compare_df.reset_index(drop=True, inplace=True)
 
