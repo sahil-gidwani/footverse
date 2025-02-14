@@ -5,3 +5,4 @@ plotly
 lxml
 matplotlib
 streamlit-javascript
+sci-kit-learn
