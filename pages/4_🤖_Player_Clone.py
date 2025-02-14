@@ -100,6 +100,22 @@ if narrow_stats:
     selected_stats = st.multiselect(
         "📊 **Choose Stats to Compare:**", stats_columns, default=selected_stats)
 
+# Allow weight adjustment
+adjust_weights = st.checkbox("⚖️ **Adjust stat weights**",
+                             help="Assign more or less importance to specific stats.")
+
+# Collect weight inputs
+stat_weights = {}
+if adjust_weights:
+    st.markdown(
+        "🔢 **Assign weight to each stat (higher value = more importance)**")
+    cols = st.columns(3)  # Create three columns for better layout
+
+    for index, stat in enumerate(selected_stats):
+        with cols[index % 3]:  # Distribute inputs across three columns
+            stat_weights[stat] = st.number_input(
+                f"⚖️ **{stat}**", min_value=0.1, max_value=10.0, value=1.0, step=0.1)
+
 # Filter dataset by position type
 if player_type == 'GK':
     compare_df = merged_df[merged_df['Position'].str.contains('GK')].copy()
@@ -124,6 +140,12 @@ stats_matrix = stats_matrix.fillna(stats_matrix.mean())
 
 # Normalize data
 stats_matrix = scaler.fit_transform(stats_matrix)
+
+# Apply weights if enabled
+if adjust_weights:
+    weight_array = np.array([stat_weights[stat] for stat in selected_stats])
+    # Scale stats based on user-defined weights
+    stats_matrix = stats_matrix * weight_array
 
 # Find cosine similarity
 player_index = compare_df[compare_df['Player'] == selected_player].index[0]
