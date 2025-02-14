@@ -1,7 +1,6 @@
 import streamlit as st
 import random
 import numpy as np
-import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import euclidean_distances
 from data.data_loader import store_session_data
