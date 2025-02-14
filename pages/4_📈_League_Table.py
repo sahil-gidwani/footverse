@@ -56,74 +56,110 @@ def highlight_rows(row, league_code):
 tabs = st.tabs(list(league_codes.keys()))
 
 for i, (league_name, league_code) in enumerate(league_codes.items()):
-    with tabs[i]:  # Create a separate tab for each league
-        standings_data = rate_limited_request(f"/competitions/{league_code}/standings")
-
-        if standings_data:
-            # Extract season details
-            competition = standings_data["competition"]
-            season = standings_data["season"]
-
-            current_season = f"{season['startDate'][:4]} - {season['endDate'][:4]}"
-            current_matchday = season["currentMatchday"]
-            competition_logo = competition["emblem"]
-
-            # Display competition details
-            # st.markdown(f"## 🏆 {competition['name']} Standings")
-            col1, col2, col3 = st.columns([1, 1, 1])
-            with col2:
-                img_bg_style = "background-color: white; padding: 10px; border-radius: 10px;" if st_theme in ["dark", "light"] else ""
-                st.markdown(f"""
-                    <div>
-                        <img src="{competition_logo}" width="150" style="{img_bg_style}">
-                    </div>
-                """, unsafe_allow_html=True)
-            st.markdown(f"**Season:** {current_season} | **Matchday:** {current_matchday}")
-
-            # Extract team standings
-            teams = standings_data["standings"][0]["table"]
-
-            # Convert data into a DataFrame
-            df = pd.DataFrame([
-                {
-                    "Position": team["position"],
-                    "Crest": team["team"]["crest"],
-                    "Team": team["team"]["name"],
-                    "Played": team["playedGames"],
-                    "Won": team["won"],
-                    "Drawn": team["draw"],
-                    "Lost": team["lost"],
-                    "Points": team["points"],
-                    "Goals For": team["goalsFor"],
-                    "Goals Against": team["goalsAgainst"],
-                    "Goal Difference": team["goalDifference"]
-                }
-                for team in teams
-            ])
-
-            df = df.drop_duplicates(subset=["Position"]) # Drop duplicate positions
-            df.set_index("Position", inplace=True)  # Set position as index
-
-            # Column configuration for Streamlit
-            column_config = {
-                "Crest": st.column_config.ImageColumn("Logo", help="Club Crest"),
-                "Team": st.column_config.TextColumn("Team"),
-                "Played": st.column_config.NumberColumn("Played"),
-                "Won": st.column_config.NumberColumn("Won"),
-                "Drawn": st.column_config.NumberColumn("Drawn"),
-                "Lost": st.column_config.NumberColumn("Lost"),
-                "Points": st.column_config.NumberColumn("Points"),
-                "Goals For": st.column_config.NumberColumn("Goals For"),
-                "Goals Against": st.column_config.NumberColumn("Goals Against"),
-                "Goal Difference": st.column_config.NumberColumn("Goal Difference"),
-            }
-
-            # Apply styling
-            styled_df = df.style.apply(lambda row: highlight_rows(row, league_code), axis=1)
-
-            # Display the table
-            st.dataframe(styled_df, column_config=column_config)
-        else:
+    with tabs[i]:  
+        competition_data = rate_limited_request(f"/competitions/{league_code}")
+        
+        if not competition_data:
             st.warning(f"⚠️ Unable to fetch data for {league_name}.")
+            continue
+        
+        competition_logo = competition_data["emblem"]
+
+        # Display competition details
+        col1, col2, col3 = st.columns([1, 1, 1])
+        with col2:
+            img_bg_style = "background-color: white; padding: 10px; border-radius: 10px; margin-bottom: 20px;" if st_theme in ["dark", "light"] else ""
+            st.markdown(f"""
+                <div>
+                    <img src="{competition_logo}" width="150" style="{img_bg_style}">
+                </div>
+            """, unsafe_allow_html=True)
+        
+        if league_code == "CL":
+            standings_data = rate_limited_request(f"/competitions/{league_code}/standings")
+            
+            current_season = standings_data["season"]
+            current_season = f"{season['startDate'][:4]}"
+            current_matchday = season["currentMatchday"]
+        else:
+            col1, col2 = st.columns(2)
+            with col1:
+                current_season = int(competition_data["currentSeason"]["startDate"][:4])
+                selected_season = st.number_input(
+                    "📅 **Select Season**",
+                    min_value=current_season - 1,
+                    max_value=current_season,
+                    value=current_season,
+                    step=1,
+                    format="%d",
+                    key=f"{league_code}_season"
+                )
+
+            standings_data = rate_limited_request(f"/competitions/{league_code}/standings?season={selected_season}")
+
+            if not standings_data:
+                st.warning(f"⚠️ No standings available for the {selected_season} season.")
+                continue
+
+            with col2:
+                season = standings_data["season"]
+                current_matchday = season["currentMatchday"]
+
+                selected_matchday = st.number_input(
+                    "🔄 **Select Matchday**",
+                    min_value=1,
+                    max_value=current_matchday,
+                    step=1,
+                    value=current_matchday,
+                    key=f"{league_code}_matchday"
+                )
+            
+            if selected_matchday != current_matchday:
+                standings_data = rate_limited_request(f"/competitions/{league_code}/standings?season={selected_season}&matchday={selected_matchday}")
+        
+        st.markdown(f"**Season:** {current_season} | **Matchday:** {current_matchday}")
+
+        # Extract team standings
+        teams = standings_data["standings"][0]["table"]
+
+        df = pd.DataFrame([
+            {
+                "Position": team["position"],
+                "Crest": team["team"]["crest"],
+                "Team": team["team"]["name"],
+                "Played": team["playedGames"],
+                "Won": team["won"],
+                "Drawn": team["draw"],
+                "Lost": team["lost"],
+                "Points": team["points"],
+                "Goals For": team["goalsFor"],
+                "Goals Against": team["goalsAgainst"],
+                "Goal Difference": team["goalDifference"]
+            }
+            for team in teams
+        ])
+
+        # Drop duplicate positions and set index
+        df = df.drop_duplicates(subset=["Position"])
+        df.set_index("Position", inplace=True)
+
+        # Column configuration for the DataFrame
+        column_config = {
+            "Crest": st.column_config.ImageColumn("Logo"),
+            "Team": st.column_config.TextColumn("Team"),
+            "Played": st.column_config.NumberColumn("Played"),
+            "Won": st.column_config.NumberColumn("Won"),
+            "Drawn": st.column_config.NumberColumn("Drawn"),
+            "Lost": st.column_config.NumberColumn("Lost"),
+            "Points": st.column_config.NumberColumn("Points"),
+            "Goals For": st.column_config.NumberColumn("Goals For"),
+            "Goals Against": st.column_config.NumberColumn("Goals Against"),
+            "Goal Difference": st.column_config.NumberColumn("Goal Difference"),
+        }
+
+        # Apply colors to the DataFrame
+        styled_df = df.style.apply(lambda row: highlight_rows(row, league_code), axis=1)
+
+        st.dataframe(styled_df, column_config=column_config)
 
 st.divider()
