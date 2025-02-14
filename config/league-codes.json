@@ -1,5 +1,4 @@
 {
-  "UEFA Champions League": "CL",
   "Premier League": "PL",
   "Serie A": "SA",
   "La Liga": "PD",
@@ -7,5 +6,6 @@
   "Ligue 1": "FL1",
   "Primeira Liga": "PPL",
   "Eredivisie": "DED",
-  "EFL Championship": "ELC"
+  "EFL Championship": "ELC",
+  "UEFA Champions League": "CL"
 }
