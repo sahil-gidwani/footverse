@@ -2,8 +2,8 @@ import streamlit as st
 import random
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics.pairwise import euclidean_distances
 from data.data_loader import store_session_data
 
 st.set_page_config(page_title="Player Clone", page_icon="🤖", layout="wide")
@@ -134,11 +134,11 @@ st.divider()
 compare_df.reset_index(drop=True, inplace=True)
 
 # Extract relevant stats and normalize
-scaler = MinMaxScaler()
+scaler = StandardScaler()
 stats_matrix = compare_df[selected_stats].copy()
 
 # Handle missing values before normalizing
-stats_matrix = stats_matrix.fillna(stats_matrix.mean())
+stats_matrix = stats_matrix.fillna(method="ffill").fillna(method="bfill")
 
 # Normalize data
 stats_matrix = scaler.fit_transform(stats_matrix)
@@ -149,12 +149,12 @@ if adjust_weights:
     # Scale stats based on user-defined weights
     stats_matrix = stats_matrix * weight_array
 
-# Find cosine similarity
+# Find Euclidean Distance
 player_index = compare_df[compare_df['Player'] == selected_player].index[0]
 
 # Compute similarity
-similarity_scores = cosine_similarity(
-    [stats_matrix[player_index]], stats_matrix)[0]
+similarity_scores = 1 / \
+    (1 + euclidean_distances([stats_matrix[player_index]], stats_matrix)[0])
 
 # Store similarity scores in DataFrame
 compare_df['Similarity Score'] = similarity_scores
