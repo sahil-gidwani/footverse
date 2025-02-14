@@ -9,7 +9,7 @@ from data.data_loader import store_session_data
 st.set_page_config(page_title="Player Clone", page_icon="🤖", layout="wide")
 
 st.title("🤖 **Player Clone**")
-st.caption("⚽ Discover players who match your favorite star's playstyle! 🌟")
+st.caption("Discover players who match your favorite star's playstyle! ⚡💫")
 st.divider()
 
 # Load data if not available
@@ -88,8 +88,8 @@ position = player_data.iloc[0]['Position']
 player_type = 'GK' if 'GK' in position else 'Outfield'
 
 # Stat category selection
-category_choice = st.selectbox(
-    "📂 **Select a Stat Category:**", categories, index=0)
+category_choice = st.selectbox("📂 **Select a Stat Category:**",
+                               categories, index=0, help="Pick a stat category for comparison.")
 selected_stats = df_columns[category_choice][11:] if category_choice in [
     "Standard", "Goalkeeping"] else df_columns[category_choice]
 

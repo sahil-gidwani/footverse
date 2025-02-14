@@ -7,7 +7,7 @@ from data.data_loader import store_session_data
 st.set_page_config(page_title="Player Comparison", page_icon="⚖️", layout="wide")
 
 st.title("⚖️ **Player Comparison**")
-st.caption("⚽ Compare two football stars and see who dominates the field! 🌟")
+st.caption("Compare two football stars and see who dominates the field! ⚽🌟")
 st.divider()
 
 # Load data if not available

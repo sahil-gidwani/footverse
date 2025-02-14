@@ -6,7 +6,7 @@ from data.data_loader import store_session_data
 st.set_page_config(page_title="Player Scout Report", page_icon="🔍", layout="wide")
 
 st.title("🔍 Player Scout Report")
-st.caption("Uncover hidden gems and analyze football players with advanced scouting insights! 📊")
+st.caption("Uncover hidden gems and analyze football players with advanced scouting insights! 📊🚀")
 st.divider()
 
 # Load data if not available in session state
