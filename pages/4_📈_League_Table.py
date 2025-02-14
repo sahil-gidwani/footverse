@@ -124,7 +124,7 @@ for i, (league_name, league_code) in enumerate(league_codes.items()):
             if selected_matchday != current_matchday:
                 standings_data = rate_limited_request(f"/competitions/{league_code}/standings?season={selected_season}&matchday={selected_matchday}")
         
-        st.markdown(f"**Season:** {current_season} | **Matchday:** {current_matchday}")
+        st.markdown(f"**Season:** {selected_season} | **Matchday:** {selected_matchday}")
 
         # Extract team standings
         teams = standings_data["standings"][0]["table"]
