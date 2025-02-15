@@ -85,7 +85,7 @@ for i, (league_name, league_code) in enumerate(league_codes.items()):
             )
             st.markdown(
                 f"""
-                <div>
+                <div style="text-align: center;">
                     <img src="{competition_logo}" width="150" style="{img_bg_style}">
                 </div>
             """,
