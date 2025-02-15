@@ -285,6 +285,16 @@ def store_session_data():
             else:
                 outfield_df_list.append(df)
 
+    # * Alternatively, load data from backup file
+    # load_backup()
+    # # Create separate lists for outfield and goalkeeping data
+    # if "data" in st.session_state:
+    #     for key, value in st.session_state.data.items():
+    #         if "Goalkeeping" in key:
+    #             goalkeeping_df_list.append(value)
+    #         else:
+    #             outfield_df_list.append(value)
+
     outfield_data = (
         merge_data(*outfield_df_list) if outfield_df_list else pd.DataFrame()
     )
@@ -306,3 +316,48 @@ def store_session_data():
             st.session_state.merged_data = merged_data
     else:
         st.warning("⚠️ Data not loaded successfully. Try again later.")
+
+
+# Define backup file path
+BACKUP_FILE = "data/backup/data.json"
+
+# Ensure backup directory exists
+os.makedirs(os.path.dirname(BACKUP_FILE), exist_ok=True)
+
+
+def store_backup():
+    """Save `st.session_state.data` to a JSON backup file."""
+    if "data" in st.session_state:
+        # Convert DataFrames to JSON serializable format
+        serializable_data = {
+            key: df.to_dict(orient="records")
+            for key, df in st.session_state.data.items()
+        }
+
+        # Save as JSON
+        with open(BACKUP_FILE, "w") as f:
+            json.dump(serializable_data, f)
+
+        st.success(f"📦 Data backed up successfully to '{BACKUP_FILE}'.")
+    else:
+        st.warning("⚠️ No data to backup!")
+
+
+def load_backup():
+    """Load session data from JSON backup file and restore `st.session_state.data`."""
+
+    if os.path.exists(BACKUP_FILE):
+        with open(BACKUP_FILE, "r") as f:
+            data = json.load(f)
+
+        if not data:
+            st.warning(f"⚠️ No data found in backup file '{BACKUP_FILE}'.")
+            return
+
+        # Convert JSON back to DataFrames
+        st.session_state.data = {
+            key: pd.DataFrame(value) for key, value in data.items()
+        }
+        st.success(f"📦 Data restored successfully from '{BACKUP_FILE}'.")
+    else:
+        st.warning(f"⚠️ Backup file '{BACKUP_FILE}' not found.")
