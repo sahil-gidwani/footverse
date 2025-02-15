@@ -198,7 +198,7 @@ scaler = StandardScaler()
 stats_matrix = compare_df[selected_stats].copy()
 
 # Handle missing values before normalizing
-stats_matrix = stats_matrix.fillna(method="ffill").fillna(method="bfill")
+stats_matrix = stats_matrix.ffill().bfill()
 
 # Normalize data
 stats_matrix = scaler.fit_transform(stats_matrix)
@@ -249,10 +249,8 @@ else:
 
     # Display with styling
     st.dataframe(
-        styled_df[
-            ["Team", "League", "Position", "Age", "Similarity Score"]
-        ].style.background_gradient(cmap="RdYlGn", subset=["Similarity Score"])
-        # Convert to percentage with 2 decimal places
+        styled_df[["Team", "League", "Position", "Age", "Similarity Score"]]
+        .style.background_gradient(cmap="RdYlGn", subset=["Similarity Score"])
         .format({"Similarity Score": "{:.2f}%", "Age": "{:.3f}"})
     )
 

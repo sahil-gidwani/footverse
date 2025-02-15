@@ -1,0 +1,116 @@
+{
+  "Attacking Score": {
+    "Goals p90": 0.3,
+    "xG p90": 0.2,
+    "Shots on Target p90": 0.15,
+    "Key Passes": 0.1,
+    "Progressive Passes Received": 0.1,
+    "Dribbles Attempted": 0.1,
+    "Touches Att Pen": 0.05
+  },
+  "Counter-Attack Threat Score": {
+    "Carries Progressive": 0.3,
+    "Progressive Passes Received": 0.2,
+    "SCA p90": 0.15,
+    "Dribbles Attempted": 0.125,
+    "Dribble Success %": 0.125,
+    "Shots on Target p90": 0.1
+  },
+  "Playmaking Score": {
+    "Key Passes": 0.25,
+    "Assists p90": 0.2,
+    "xAG p90": 0.2,
+    "Progressive Passes": 0.15,
+    "Passes into Final Third": 0.1,
+    "Through Balls": 0.1
+  },
+  "Build-Up Play Score": {
+    "Progressive Passes": 0.25,
+    "Passes into Final Third": 0.2,
+    "Long Pass Completion %": 0.2,
+    "Key Passes": 0.15,
+    "xAG p90": 0.1,
+    "Progressive Pass Distance": 0.1
+  },
+  "Set-Piece Specialist Score": {
+    "SCA Pass Dead": 0.2,
+    "GCA Pass Dead": 0.2,
+    "Dead-Ball Passes": 0.15,
+    "Passes from Free Kicks": 0.15,
+    "Crosses into Penalty Area": 0.15,
+    "Penalties Scored": 0.15
+  },
+  "Clutch Score": {
+    "Goals p90": 0.25,
+    "Assists p90": 0.25,
+    "GCA p90": 0.15,
+    "SCA p90": 0.15,
+    "Shots p90": 0.1,
+    "Penalties Scored": 0.1
+  },
+  "Ball Retention Score": {
+    "Pass Completion %": 0.3,
+    "Carries Progressive": 0.25,
+    "Progressive Passes": 0.25,
+    "Dribble Success %": 0.2,
+    "Switches": 0.2,
+    "Dispossessed": -0.1,
+    "Miscontrols": -0.1
+  },
+  "Defensive Score": {
+    "Tackles + Interceptions": 0.25,
+    "Blocks": 0.2,
+    "Clearances": 0.2,
+    "Aerial Win %": 0.15,
+    "Ball Recoveries": 0.15,
+    "Dribbles Tackle %": 0.15,
+    "Errors Leading To Shot": -0.05,
+    "Fouls Committed": -0.05
+  },
+  "Pressing Score": {
+    "SCA Def Action": 0.3,
+    "GCA Def Action": 0.3,
+    "Tackles Att 3rd": 0.1,
+    "Interceptions": 0.1,
+    "Blocks": 0.1,
+    "Dribbles Challenged": 0.1
+  },
+  "Versatility Score": {
+    "SCA p90": 0.1,
+    "GCA p90": 0.1,
+    "xG p90": 0.1,
+    "xAG p90": 0.1,
+    "Key Passes": 0.1,
+    "Progressive Passes": 0.1,
+    "Carries Progressive": 0.1,
+    "Tackles + Interceptions": 0.1,
+    "Ball Recoveries": 0.05,
+    "Aerial Win %": 0.05,
+    "Dribble Success %": 0.05,
+    "Pass Completion %": 0.05
+  },
+  "Goalkeeping Score": {
+    "Save %": 0.3,
+    "Clean Sheet %": 0.2,
+    "Post-Shot xGA +/-": 0.2,
+    "Defensive Actions OPA p90": 0.1,
+    "Cross Stoppage %": 0.1,
+    "Launch Completion %": 0.1
+  },
+  "Goalkeeping Distribution Score": {
+    "Launch Completion %": 0.6,
+    "Passes Attempted": 0.35,
+    "Throws Attempted": 0.25,
+    "Launch %": -0.05,
+    "Average Pass Length": -0.05,
+    "Goal Kicks Launch %": -0.05,
+    "Goal Kicks Avg Length": -0.05
+  },
+  "Goalkeeping Sweeper Score": {
+    "Defensive Actions OPA p90": 0.4,
+    "Defensive Actions Avg Distance": 0.4,
+    "Cross Stoppage %": 0.15,
+    "Defensive Actions OPA": 0.15,
+    "Penalties Allowed": -0.1
+  }
+}
