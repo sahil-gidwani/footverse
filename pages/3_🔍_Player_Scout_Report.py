@@ -110,7 +110,7 @@ with st.expander("📊 __Detailed Scout Report__", expanded=True):
 
 if "data" in st.session_state:
     dataset_names = list(st.session_state.data.keys())
-    dataset_names = dataset_names if st.session_state.selected_position == "GK" else dataset_names[:-2]
+    dataset_names = st.session_state.goalkeeping_categories if st.session_state.selected_position == "GK" else st.session_state.outfield_categories
     
     for dataset_name in dataset_names:
         df = st.session_state.data[dataset_name]

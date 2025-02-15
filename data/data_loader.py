@@ -178,6 +178,13 @@ def store_session_data():
         "Goalkeeping Data": ("https://fbref.com/en/comps/Big5/keepers/players/Big-5-European-Leagues-Stats", "columns/goalkeeping_data.json", True, True),
         "Advanced Goalkeeping Data": ("https://fbref.com/en/comps/Big5/keepersadv/players/Big-5-European-Leagues-Stats", "columns/advanced_goalkeeping_data.json", False, True),
     }
+    
+    outfield_categories = [key for key in datasets.keys() if key not in ["Goalkeeping Data", "Advanced Goalkeeping Data"]]
+    goalkeeping_categories = ["Standard Data", "Goalkeeping Data", "Advanced Goalkeeping Data"]
+    
+    if "outfield_categories" not in st.session_state or "goalkeeping_categories" not in st.session_state:
+        st.session_state.outfield_categories = outfield_categories
+        st.session_state.goalkeeping_categories = goalkeeping_categories
 
     outfield_df_list = []
     goalkeeping_df_list = []

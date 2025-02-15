@@ -1,6 +1,7 @@
 import streamlit as st
 import random
 import numpy as np
+import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import euclidean_distances
 from data.data_loader import store_session_data
@@ -18,14 +19,13 @@ if 'merged_data' not in st.session_state or 'data' not in st.session_state:
 merged_df = st.session_state.merged_data
 data = st.session_state.data
 stats_columns = merged_df.columns[7:]
+outfield_categories = st.session_state.outfield_categories
+goalkeeping_categories = st.session_state.goalkeeping_categories
+outfield_columns = st.session_state.outfield_columns
+goalkeeping_columns = st.session_state.goalkeeping_columns
 
 # Extract Primary Position
 merged_df['Primary Position'] = merged_df['Position'].str.split(',').str[0]
-
-# Extract column names for each category
-df_columns = {name.replace(" Data", ""): list(df.columns)
-              for name, df in data.items()}
-categories = list(df_columns.keys())
 
 
 def unique_sorted_list(column, condition=None):
@@ -86,10 +86,28 @@ if player_data.empty:
 position = player_data.iloc[0]['Position']
 player_type = 'GK' if 'GK' in position else 'Outfield'
 
+stats_columns = stats_columns.tolist()
+if player_type == 'GK':
+    stats_columns = list(
+        pd.Index(stats_columns).intersection(goalkeeping_columns))
+else:
+    stats_columns = list(
+        pd.Index(stats_columns).intersection(outfield_columns))
+
+# Determine stat categories based on player position
+# * Drop Standard category for GK
+categories = goalkeeping_categories[1:
+                                    ] if player_type == 'GK' else outfield_categories
+categories = [category.replace(" Data", "") for category in categories]
+
+# Extract column names for each category
+df_columns = {name.replace(" Data", ""): list(pd.Index(df.columns).intersection(stats_columns))
+              for name, df in data.items()}
+
 # Stat category selection
 category_choice = st.selectbox("📂 **Select a Stat Category:**",
                                categories, index=0, help="Pick a stat category for comparison.")
-selected_stats = df_columns[category_choice][11:] if category_choice in [
+selected_stats = df_columns[category_choice][4:] if category_choice in [
     "Standard", "Goalkeeping"] else df_columns[category_choice]
 
 # Allow narrowing stats
