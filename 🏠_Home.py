@@ -26,10 +26,12 @@ Football isn’t just a game—it’s a world of numbers, patterns, and insights
 st.markdown("### 🔍 What You Can Do with Footverse")
 st.write(
     """
-- **Explore Player & Team Stats** – Analyze detailed player performances across leagues.  
+- **Explore Player Stats** – Analyze detailed player performances across leagues.  
 - **Compare Players** – See how your favorite players stack up against their peers.  
-- **Unlock Advanced Metrics** – Go beyond basic stats with percentile rankings & performance heatmaps.  
+- **Unlock Advanced Metrics** – Go beyond basic stats with percentile rankings & performance insights.  
 - **Goalkeeping & Outfield Insights** – Get specialized reports tailored for each position.  
+- **Scout Players** – Discover hidden gems and potential signings with data-driven scouting.
+- **Live Matchday Updates** – Stay updated with live, upcoming, and past matches across leagues.
 """
 )
 
@@ -49,6 +51,7 @@ st.write(
 ✅ **Data-Powered Football** – Get insights from real match data.  
 ✅ **Intuitive & Interactive** – No more spreadsheets, just clean, visualized stats.  
 ✅ **Built for Fans & Professionals** – Whether you're an analyst, coach, or fan, there's something for you.  
+✅ **Always Up-to-Date** – Live matchday updates and real-time data ensure you're never behind.
 """
 )
 
