@@ -250,10 +250,10 @@ else:
     # Display with styling
     st.dataframe(
         styled_df[
-            ["Team", "League", "Position", "Similarity Score"]
+            ["Team", "League", "Position", "Age", "Similarity Score"]
         ].style.background_gradient(cmap="RdYlGn", subset=["Similarity Score"])
         # Convert to percentage with 2 decimal places
-        .format({"Similarity Score": "{:.2f}%"})
+        .format({"Similarity Score": "{:.2f}%", "Age": "{:.3f}"})
     )
 
 st.divider()

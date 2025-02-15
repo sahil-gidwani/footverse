@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 import plotly.express as px
 from data.data_loader import store_session_data
 
@@ -80,58 +81,133 @@ if filters["Age"] != (15, 50):
 
 filtered_df.drop(columns=["Primary Position"], errors="ignore", inplace=True)
 
-# Statistic Selection
-st.subheader("🔢 **Dive Into The Numbers!**")
-st.info("Choose a statistic to visualize and analyze player performance like a pro! 🔍")
+tabs = st.tabs(["🔢 Overall Player Performance", "🔄 Multi-Stat Comparison"])
 
-stat = st.selectbox(
-    "📈 **Select a Key Performance Metric**",
-    options=stats_columns,
-    help="Pick a statistic to compare players.",
-    index=4,
-)
-top_n = st.slider(
-    "🏅 **How Many Players to Display?**",
-    3,
-    50,
-    10,
-    help="Adjust the number of top-performing players shown.",
-)
+with tabs[0]:
+    st.info("Analyze player performances based on key performance metrics.")
 
-if "p90" in stat:
-    min_minutes = st.slider(
-        "⏳ **Minimum Minutes Played**",
-        0,
-        int(filtered_df["Minutes"].max()),
-        int(filtered_df["Minutes"].mean()),
-        help="Filter players based on game time.",
+    stat = st.selectbox(
+        "📈 **Select a Key Performance Metric**",
+        options=stats_columns,
+        help="Pick a statistic to compare players.",
+        index=4,
     )
-    filtered_df = filtered_df[filtered_df["Minutes"] >= min_minutes]
-
-st.divider()
-
-# Plot Chart
-st.markdown(f"### 🏆 **Top {top_n} Players in {stat}**")
-st.success(
-    "Here’s a breakdown of the best-performing players based on your selected metric!"
-)
-
-stat_chart = px.bar(
-    filtered_df.nlargest(top_n, stat),
-    x="Player",
-    y=stat,
-    hover_data=["Position", "Team", "Age"],
-    color="League",
-    title=f"Top {top_n} Players by {stat}",
-)
-st.plotly_chart(stat_chart, use_container_width=True)
-
-# Display Data
-with st.expander(f"📜 **View Complete List of Top Players by {stat}**", expanded=False):
-    st.write(
-        filtered_df.iloc[:, :6]
-        .join(filtered_df[[stat]])
-        .sort_values(stat, ascending=False)
+    top_n = st.slider(
+        "🏅 **How Many Players to Display?**",
+        3,
+        50,
+        10,
+        help="Adjust the number of top-performing players shown.",
     )
+
+    if "p90" in stat:
+        min_minutes = st.slider(
+            "⏳ **Minimum Minutes Played**",
+            0,
+            int(filtered_df["Minutes"].max()),
+            int(filtered_df["Minutes"].mean()),
+            help="Filter players based on game time.",
+        )
+        filtered_df = filtered_df[filtered_df["Minutes"] >= min_minutes]
+
+    # Plot Chart
+    stat_chart = px.bar(
+        filtered_df.nlargest(top_n, stat),
+        x="Player",
+        y=stat,
+        hover_data=["Position", "Team", "Age"],
+        color="League",
+        title=f"🏆 Top {top_n} Players by {stat}",
+    )
+    st.plotly_chart(stat_chart, use_container_width=True)
+
+    # Display Data
+    with st.expander(
+        f"📜 **View Complete List of Top Players by {stat}**", expanded=False
+    ):
+        st.dataframe(
+            filtered_df.iloc[:, :6]
+            .join(filtered_df[[stat]])
+            .sort_values(stat, ascending=False)
+            .style.background_gradient(cmap="RdYlGn", subset=[stat])
+            .format({"Age": "{:.3f}"})
+        )
+
+with tabs[1]:
+    st.info("Compare player performances across multiple statistics.")
+
+    # Select 2 or 3 Stats
+    selected_stats = st.multiselect(
+        "📈 Choose 2 or 3 Stats for Comparison",
+        options=stats_columns,
+        default=stats_columns[4:6],
+        max_selections=3,
+        help="Select multiple statistics to compare player performances.",
+    )
+
+    top_n_multi = st.slider(
+        "🏅 **How Many Players to Display for Multi-Stat Analysis?**",
+        3,
+        50,
+        10,
+        help="Adjust the number of top-performing players shown.",
+    )
+
+    if len(selected_stats) < 2:
+        st.warning("⚠️ Please select at least **2 stats** to compare.")
+    else:
+        # Compute total ranking score by summing selected statistics
+        filtered_df["Stat_Sum"] = filtered_df[selected_stats].sum(axis=1)
+        top_players_multi_df = filtered_df.nlargest(top_n_multi, "Stat_Sum")
+
+        if len(selected_stats) == 2:
+            # 2D Scatter Plot
+            scatter_fig = px.scatter(
+                top_players_multi_df,
+                x=selected_stats[0],
+                y=selected_stats[1],
+                color="Player",
+                hover_data=["Team", "Age"],
+                title=f"🏆 Top {top_n} Players by {selected_stats[0]} vs {selected_stats[1]}",
+                size="Stat_Sum",
+            )
+        else:
+            # 3D Scatter Plot (for 3 Stats)
+            scatter_fig = px.scatter_3d(
+                top_players_multi_df,
+                x=selected_stats[0],
+                y=selected_stats[1],
+                z=selected_stats[2],
+                color="Player",
+                hover_data=["Team", "Age"],
+                title=f"🏆 Top {top_n} Players by {selected_stats[0]} vs {selected_stats[1]} vs {selected_stats[2]}",
+                size="Stat_Sum",
+            )
+
+        st.plotly_chart(scatter_fig, use_container_width=True)
+
+        # Display Data
+        with st.expander(
+            f"📜 **View Complete List of Top Players by {', '.join(selected_stats)}**",
+            expanded=False,
+        ):
+            # Determine the formatting for selected stats
+            format_dict = {"Age": "{:.3f}"}  # Ensure Age is formatted
+            for stat in selected_stats:
+                if pd.api.types.is_float_dtype(filtered_df[stat]):
+                    format_dict[stat] = "{:.3f}"  # Format floats to 3 decimal places
+                else:
+                    format_dict[stat] = "{}"  # Keep integers as they are
+
+            # Display Data with Proper Formatting
+            st.dataframe(
+                filtered_df.iloc[:, :6]
+                .join(filtered_df[selected_stats])
+                .join(filtered_df["Stat_Sum"])
+                .sort_values("Stat_Sum", ascending=False)
+                .drop(columns=["Stat_Sum"])  # Remove helper column
+                .style.background_gradient(cmap="RdYlGn", subset=selected_stats)
+                .format(format_dict)  # Apply dynamic formatting
+            )
 
 st.divider()
