@@ -81,6 +81,12 @@ if filters["Age"] != (15, 50):
 
 filtered_df.drop(columns=["Primary Position"], errors="ignore", inplace=True)
 
+if filtered_df.empty:
+    st.error(
+        "No players found based on the selected filters. Please adjust your search."
+    )
+    st.stop()
+
 tabs = st.tabs(["🔢 Overall Player Performance", "🔄 Multi-Stat Comparison"])
 
 with tabs[0]:

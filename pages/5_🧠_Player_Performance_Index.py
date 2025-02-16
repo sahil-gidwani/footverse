@@ -35,6 +35,22 @@ with col2:
 
 position_filter = "Goalkeeper" if position_filter == "🧤 Goalkeepers" else "Outfield"
 
+
+# Filter Players by Position**
+def filter_players_by_position(df, position_filter):
+    """Filters players based on whether they are Goalkeepers or Outfield players."""
+    if position_filter == "Goalkeeper":
+        cols_to_drop = [
+            col for col in outfield_columns[11:] if col != "Passes Attempted"
+        ]
+        return df[df["Primary Position"] == "GK"].drop(columns=cols_to_drop)
+    else:
+        return df[df["Primary Position"] != "GK"].drop(columns=goalkeeping_columns[11:])
+
+
+merged_df["Primary Position"] = merged_df["Position"].str.split(",").str[0]
+filtered_df = filter_players_by_position(merged_df, position_filter)
+
 # Define Outfield and Goalkeeping Categories
 goalkeeper_categories = [
     "Goalkeeping Score",
@@ -59,6 +75,66 @@ selected_category = st.selectbox(
     category_options,
     help="Categories group relevant stats based on playing roles and contributions.",
 )
+
+# Sidebar Filters
+with st.sidebar:
+    st.subheader("🎯 **Refine Your Search**")
+
+    filters = {
+        "Leagues": st.pills(
+            "🌍 Select Leagues",
+            options=sorted(merged_df["League"].dropna().unique().tolist()),
+            selection_mode="multi",
+        ),
+        "Teams": st.multiselect(
+            "🏆 Choose Teams",
+            options=sorted(merged_df["Team"].dropna().unique().tolist()),
+            placeholder="Pick your favorite teams",
+        ),
+        "Nations": st.multiselect(
+            "🌎 Select Nationalities",
+            options=sorted(merged_df["Nationality"].dropna().unique().tolist()),
+            placeholder="Filter by country",
+        ),
+    }
+
+    if position_filter == "Outfield":
+        filters["Positions"] = st.segmented_control(
+            "⚽ Player Positions",
+            options=["DF", "MF", "FW"],
+            selection_mode="multi",
+        )
+
+    filters["Age"] = st.slider(
+        "📅 Age Range",
+        15,
+        50,
+        (15, 50),
+        help="Select the age range of players to analyze.",
+    )
+
+# Apply Sidebar Filters
+filter_conditions = {
+    "League": filters["Leagues"],
+    "Team": filters["Teams"],
+    "Nationality": filters["Nations"],
+}
+
+if position_filter == "Outfield":
+    filter_conditions["Primary Position"] = filters.get("Positions", [])
+
+for col, values in filter_conditions.items():
+    if values:
+        filtered_df = filtered_df[filtered_df[col].isin(values)]
+
+if filters["Age"] != (15, 50):
+    filtered_df = filtered_df[filtered_df["Age"].between(*filters["Age"])]
+
+filtered_df.drop(columns=["Primary Position"], errors="ignore", inplace=True)
+
+if filtered_df.empty:
+    st.error("No players found with the selected filters. Please adjust your search.")
+    st.stop()
 
 # Expander for Custom Metric Selection & Weight Adjustment
 with st.expander("Customize Metrics & Weights", icon="⚙️"):
@@ -122,23 +198,6 @@ selected_metrics = [
     if not np.isclose(weight, 0.0, atol=0.0001)
 ]
 
-
-# Filter Players by Position**
-def filter_players_by_position(df, position_filter):
-    """Filters players based on whether they are Goalkeepers or Outfield players."""
-    if position_filter == "Goalkeeper":
-        cols_to_drop = [
-            col for col in outfield_columns[11:] if col != "Passes Attempted"
-        ]
-        return df[df["Primary Position"] == "GK"].drop(columns=cols_to_drop)
-    else:
-        return df[df["Primary Position"] != "GK"].drop(columns=goalkeeping_columns[11:])
-
-
-merged_df["Primary Position"] = merged_df["Position"].str.split(",").str[0]
-filtered_df = filter_players_by_position(merged_df, position_filter)
-filtered_df.drop(columns=["Primary Position"], inplace=True)
-
 # Minimum Minutes Played Filter
 min_minutes = st.slider(
     "⏳ **Minimum Minutes Played**",
@@ -182,10 +241,10 @@ def quantile_scaling(scores):
     return scores
 
 
-# Step 4: Enhance Final Scores DataFrame
+# Enhance Final Scores DataFrame
 def enhance_final_scores(df, original_df):
     """Adds extra columns and ensures correct column order."""
-    extra_columns = ["Team", "League", "Position", "Age"]
+    extra_columns = ["Team", "League", "Position", "Age", "Nationality"]
     score_columns = ["Weighted Score", "Percentile Rank"]
 
     # Merge extra details from original dataframe
