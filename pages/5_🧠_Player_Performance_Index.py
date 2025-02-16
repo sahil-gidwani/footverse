@@ -280,16 +280,9 @@ final_scores_df = enhance_final_scores(final_scores_df, filtered_df)
 final_scores_df = final_scores_df.loc[~final_scores_df.index.duplicated(keep="first")]
 
 # Display Results
-st.caption(
-    f"🔍 Analyzing **{selected_category}** Metrics for **{position_filter}** Players"
-)
+st.caption(f"🔍 Analyzing **{selected_category}** Metrics")
 
 # Define the columns that should have the gradient
-# gradient_columns = [
-#     col
-#     for col in final_scores_df.columns
-#     if col not in ["Team", "League", "Position", "Age"]
-# ]
 gradient_columns = ["Weighted Score"]
 
 # Apply styling
